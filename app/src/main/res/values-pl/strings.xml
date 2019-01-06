@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gamemode_infinite">Nieskończony</string>
+    <string name="gamemode_timelimited">Ograniczony czas</string>
+    <string name="gamemode_movelimited">Ograniczone ruchy</string>
+    <string name="gamemode_infinite_description">Graj bez limitów</string>
+    <string name="gamemode_timelimited_description">Graj z czasem ograniczonym do %1$d minut</string>
+    <string name="gamemode_movelimited_description">Graj z ilością ruchów ograniczoną do %1$d</string>
+    <string name="results_yourscore">Twój wynik:</string>
+    <string name="results_time">Czas: %1$s</string>
+    <string name="results_moves">Ruchy: %1$d</string>
+    <string name="results_timeleft">Pozostały czas: %1$s</string>
+    <string name="results_movesleft">Pozostałe ruchy: %1$d</string>
+    <string name="gamemode_timelimited_one_description">Graj z czasem ograniczonym do %1$d minuty</string>
+    <string name="scoreboard_bestscores">Najlepsze wyniki</string>
+    <string name="results_newhigh">Nowy rekord!</string>
+    <string name="scoreboard_today">Dzisiaj</string>
+    <string name="scoreboard_alltime">Ogółem</string>
+    <string name="results_today_high">Dzisiejszy rekord!</string>
+    <string name="info_cycle">Ta gra polega na przesuwaniu kolorowych klocków. To wszystko.{n}{n}Dostosuj tryb i zacznij grać - ułóż trzy, lub więcej, klocków w linii, a wtedy eksplodują! Dosłownie.{n}(Jeżeli chcesz zresetować grę, przytrzymaj palec gdziekolwiek w górnej części ekranu.){n}{n}Tylko pamiętaj, że za każdym razem, kiedy przesuwasz klocek, ten przemieszczony przez niego zmienia kolor w cyklu:</string>
+    <string name="info_tips">W celu kontaktu ze mną, naciśniij logo poniżej.</string>
+    <string name="achievement_unlocked">Osiągnięcie odblokowane</string>
+    <string name="achievement_games_played">Zagraj %1$d gier</string>
+    <string name="achievement_no_moves">Musiałeś tylko przesunąć trochę kwadratów...</string>
+    <string name="achievement_no_points">To były naprawdę bezcelowe ruchy!</string>
+    <string name="achievement_heart">Z całego serca...</string>
+    <string name="achievement_over_5000">Nudzisz się, prawda?</string>
+    <string name="gamemode_untilpointless">Kontynuuj niszczenie</string>
+    <string name="gamemode_untilpointless_description">Graj do wykonania nieniszczącego ruchu.</string>
+    <string name="achievement_checkboard">To prawie jak szachownica!</string>
+    <string name="games_played">Rozegrane gry: %1$d</string>
+</resources>
