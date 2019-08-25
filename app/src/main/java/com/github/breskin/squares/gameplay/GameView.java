@@ -1,5 +1,6 @@
 package com.github.breskin.squares.gameplay;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
@@ -55,6 +56,10 @@ public class GameView implements View {
     public void open() {
         gameLogic.prepare();
         modeSwitcher.open();
+    }
+
+    public void load(Context context) {
+        modeSwitcher.load(context);
     }
 
     public RenderView getRenderView() {

@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name" translatable="false">ColorCrush</string>
+    <string name="mode_endless">Endless</string>
+    <string name="mode_endless_description">Play without limits</string>
+    <string name="mode_movelimited">Limited moves</string>
+    <string name="mode_movelimited_description">Play with number of moves limited to %1$d</string>
+    <string name="mode_timelimited">Limited time</string>
+    <string name="mode_timelimited_description">Play with time limited to %1$d minutes</string>
+    <string name="mode_timelimited_description_one">Play with time limited to %1$d minute</string>
+    <string name="info_time">Time: %1$s</string>
+    <string name="info_moves">Moves: %1$d</string>
+    <string name="info_your_score">Your score:</string>
+    <string name="info_time_left">Time left: %1$s</string>
+    <string name="info_moves_left">Moves left: %1$d</string>
 </resources>

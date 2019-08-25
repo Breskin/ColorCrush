@@ -136,7 +136,7 @@ public class Board {
             blocksInPatterns.push(blocks[x][0]);
 
             for (int y = 1; y < 5; y++) {
-                if (blocks[x][y - 1].getCurrentColor() == blocks[x][y].getCurrentColor()) {
+                if (blocks[x][y - 1].getTargetColor() == blocks[x][y].getTargetColor()) {
                     length++;
                     blocksInPatterns.push(blocks[x][y]);
                 } else {
@@ -167,7 +167,7 @@ public class Board {
             blocksInPatterns.push(blocks[0][y]);
 
             for (int x = 1; x < 5; x++) {
-                if (blocks[x - 1][y].getCurrentColor() == blocks[x][y].getCurrentColor()) {
+                if (blocks[x - 1][y].getTargetColor() == blocks[x][y].getTargetColor()) {
                     length++;
                     blocksInPatterns.push(blocks[x][y]);
                 } else {

@@ -195,6 +195,10 @@ public class Block {
         return currentColor;
     }
 
+    public BlockColor getTargetColor() {
+        return targetColor;
+    }
+
     public float getCurrentExpansion() {
         return currentExpansion;
     }

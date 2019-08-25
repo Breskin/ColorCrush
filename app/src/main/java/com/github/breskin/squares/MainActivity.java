@@ -2,6 +2,7 @@ package com.github.breskin.squares;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -46,5 +47,18 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         if (!renderView.onBackPressed())
             super.onBackPressed();
+    }
+
+    public static float fitFontSize(Paint mPaint, String text, float desiredFontSize, float maxWidth) {
+        float save = mPaint.getTextSize();
+        mPaint.setTextSize(desiredFontSize);
+
+        while (mPaint.measureText(text) > maxWidth)
+            mPaint.setTextSize(mPaint.getTextSize() - 1);
+
+        float result = mPaint.getTextSize();
+        mPaint.setTextSize(save);
+
+        return result;
     }
 }

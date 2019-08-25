@@ -1,10 +1,13 @@
 package com.github.breskin.squares.gameplay.modes;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.Log;
 
+import com.github.breskin.squares.R;
 import com.github.breskin.squares.RenderView;
 import com.github.breskin.squares.gameplay.Block;
 import com.github.breskin.squares.gameplay.Board;
@@ -21,24 +24,23 @@ public class GameMode {
     protected String yourScoreText, moveCountText, timeText;
 
     protected int pointsTable[];
+    protected int multiplier = 1, maxMultiplierValue = 5;
 
-    protected boolean closing = false, locked = false;
-    protected float animationProgress = 0, topMargin = 0, alpha = 0;
+    protected boolean closing = false, locked = false, usesMultiplier = false, usesProgressBar = false;
+    protected float animationProgress = 0, topMargin = 0, alpha = 0, progress = 0, targetProgress = 0;
 
     public GameMode() {
         paint.setAntiAlias(true);
 
         pointsTable = new int[7];
-
-        yourScoreText = "your score: ";
-        moveCountText = "moves: ";
-        timeText = "time: ";
     }
 
     public void reset() {
         animationProgress = 0;
         topMargin = -RenderView.ViewHeight * 0.4f;
         alpha = 0;
+
+        progress = targetProgress = 1;
 
         locked = false;
         closing = false;
@@ -53,6 +55,8 @@ public class GameMode {
         checkPatterns(logic);
 
         updateAnimations(logic);
+
+        progress += (targetProgress - progress) * 0.15f;
     }
 
     private void updateAnimations(GameLogic logic) {
@@ -107,26 +111,38 @@ public class GameMode {
     }
 
     public void renderSessionInfo(GameLogic logic, Canvas canvas) {
-        drawCustomizedInfo(logic, canvas, moveCountText + logic.moveCount, timeText + timeToString(logic.gameDuration / 1000));
+        drawCustomizedInfo(logic, canvas, String.format(moveCountText, logic.moveCount), String.format(timeText, timeToString(logic.gameDuration / 1000)));
     }
 
     protected void drawCustomizedInfo(GameLogic logic, Canvas canvas, String moves, String time) {
-        float margin = (logic.getBoard().getTranslation().y - RenderView.ViewWidth * 0.335f) / 2 + topMargin + animationProgress * Block.getSize() * 2;
+        float margin = (logic.getBoard().getTranslation().y - RenderView.ViewWidth * 0.16f) / 2 + topMargin + animationProgress * Block.getSize() * 2;
 
-        paint.setTextSize(RenderView.ViewWidth * 0.055f);
+        paint.setTextSize(RenderView.ViewWidth * 0.05f);
         paint.setColor(Color.WHITE);
         paint.setAlpha((int)(alpha * 255));
+        paint.setStyle(Paint.Style.FILL);
 
         canvas.drawText(moves, RenderView.ViewWidth * 0.01f + (RenderView.ViewWidth * 0.98f - paint.measureText(moves)) * animationProgress * 0.5f,
-                margin + paint.getTextSize() * 1.5f + RenderView.ViewWidth * 0.425f * animationProgress, paint);
+                paint.getTextSize() * 2f + (margin + RenderView.ViewWidth * 0.3f) * animationProgress, paint);
         canvas.drawText(time, RenderView.ViewWidth * 0.99f - paint.measureText(time) - (RenderView.ViewWidth * 0.98f - paint.measureText(time)) * animationProgress * 0.5f,
-                margin + paint.getTextSize() * 1.5f + (RenderView.ViewWidth * 0.425f + paint.getTextSize() * 1.75f) * animationProgress, paint);
+                paint.getTextSize() * 2f + (margin + RenderView.ViewWidth * 0.3f + paint.getTextSize() * 1.75f) * animationProgress, paint);
 
-        canvas.drawText(yourScoreText, (RenderView.ViewWidth - paint.measureText(yourScoreText)) / 2, margin + paint.getTextSize() * 3.5f, paint);
-        margin += paint.getTextSize() * 3.5f;
+        paint.setTextSize(RenderView.ViewWidth * (0.04f + animationProgress * 0.01f));
+        canvas.drawText(yourScoreText, (RenderView.ViewWidth - paint.measureText(yourScoreText)) / 2, margin + paint.getTextSize(), paint);
+        margin += paint.getTextSize();
 
         paint.setTextSize(RenderView.ViewWidth * (0.125f + animationProgress * 0.1f));
         canvas.drawText(Math.round(logic.pointsVisible)+"", (RenderView.ViewWidth - paint.measureText(Math.round(logic.pointsVisible)+"")) / 2, paint.getTextSize() + margin, paint);
+
+        if (usesProgressBar) {
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(RenderView.ViewWidth * 0.01f);
+            paint.setAlpha((int)(alpha * 255 * Math.pow(1 - animationProgress, 3)));
+
+            float radius = RenderView.ViewWidth * 0.18f;
+
+            canvas.drawArc(new RectF(RenderView.ViewWidth * 0.5f - radius, paint.getTextSize() * 0.4f + margin - radius, RenderView.ViewWidth * 0.5f + radius, paint.getTextSize() * 0.4f + margin + radius), -90, 360 * progress, false, paint);
+        }
     }
 
     public boolean isClosed() {
@@ -137,12 +153,34 @@ public class GameMode {
         return locked;
     }
 
+    public boolean usesMultiplier() {
+        return usesMultiplier;
+    }
+
+    public int getMaxMultiplierValue() {
+        return maxMultiplierValue;
+    }
+
+    public int getMultiplier() {
+        return multiplier;
+    }
+
+    public void setMultiplier(int multiplier) {
+        this.multiplier = multiplier;
+    }
+
     public String getName() {
         return name;
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public void load(Context context) {
+        yourScoreText = context.getString(R.string.info_your_score);
+        timeText = context.getString(R.string.info_time);
+        moveCountText = context.getString(R.string.info_moves);
     }
 
     String timeToString(int t) {
