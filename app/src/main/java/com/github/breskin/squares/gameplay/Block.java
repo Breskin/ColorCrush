@@ -102,7 +102,7 @@ public class Block {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (selected) {
+                if (!logic.getCurrentMode().isLocked() && selected) {
                     currentPosition.x += (x - previousTouch.x) / getSize();
                     currentPosition.y += (y - previousTouch.y) / getSize();
                 }
@@ -115,6 +115,11 @@ public class Block {
                     selected = false;
                 }
                 break;
+        }
+
+        if (logic.getCurrentMode().isLocked() && selected) {
+            targetExpansion = 0;
+            selected = false;
         }
 
         previousTouch.x = x;

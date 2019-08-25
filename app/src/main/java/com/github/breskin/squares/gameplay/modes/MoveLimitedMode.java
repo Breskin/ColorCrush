@@ -10,7 +10,7 @@ public class MoveLimitedMode extends GameMode {
 
     private static final int BASE_MOVE_LIMIT = 50;
 
-    private String remainingMoves = "remaining moves: ";
+    private String remainingMoves;
 
     private int moveLimit = BASE_MOVE_LIMIT;
 

@@ -15,7 +15,7 @@ public class GameLogic {
     private Board board;
     private GameMode currentMode;
 
-    private boolean gameStarted = false, gameFinished = false;
+    private boolean gameStarted = false, gameFinished = false, touchDown = false;
 
     public int moveCount = 0, gameDuration = 0, points = 0;
     public float pointsVisible = 0;
@@ -64,7 +64,12 @@ public class GameLogic {
         }
 
         if (gameFinished) {
-            currentMode.close();
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
+                touchDown = true;
+            else if (touchDown && event.getAction() == MotionEvent.ACTION_UP) {
+                currentMode.close();
+                touchDown = false;
+            }
         }
 
         return boardTouch;
@@ -111,7 +116,7 @@ public class GameLogic {
 
     public void onMoveMade() {
         moveCount++;
-        currentMode.onMoveMade();
+        currentMode.onMoveMade(this);
     }
 
     public Board getBoard() {

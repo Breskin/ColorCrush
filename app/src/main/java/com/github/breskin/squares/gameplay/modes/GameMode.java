@@ -106,7 +106,7 @@ public class GameMode {
         }
     }
 
-    public void onMoveMade() {
+    public void onMoveMade(GameLogic logic) {
 
     }
 

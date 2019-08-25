@@ -12,4 +12,6 @@
     <string name="info_your_score">Your score:</string>
     <string name="info_time_left">Time left: %1$s</string>
     <string name="info_moves_left">Moves left: %1$d</string>
+    <string name="mode_constant">Keep crushing</string>
+    <string name="mode_constant_description">Play until you make nondestructive move</string>
 </resources>

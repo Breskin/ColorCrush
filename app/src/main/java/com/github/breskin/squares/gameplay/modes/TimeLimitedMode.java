@@ -10,7 +10,7 @@ public class TimeLimitedMode extends GameMode {
 
     private static final int BASE_TIME_LIMIT = 60000;
 
-    private String remainingTime = "remaining time: ", description_one;
+    private String remainingTime, description_one;
 
     private int timeLimit = BASE_TIME_LIMIT;
 

@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 
 import com.github.breskin.squares.MainActivity;
 import com.github.breskin.squares.RenderView;
+import com.github.breskin.squares.gameplay.modes.ConstantMode;
 import com.github.breskin.squares.gameplay.modes.EndlessMode;
 import com.github.breskin.squares.gameplay.modes.GameMode;
 import com.github.breskin.squares.gameplay.modes.MoveLimitedMode;
@@ -28,6 +29,7 @@ public class ModeSwitcher {
     private EndlessMode endlessMode = new EndlessMode();
     private MoveLimitedMode moveLimitedMode = new MoveLimitedMode();
     private TimeLimitedMode timeLimitedMode = new TimeLimitedMode();
+    private ConstantMode constantMode = new ConstantMode();
 
     private Multiplier multiplier;
 
@@ -48,6 +50,7 @@ public class ModeSwitcher {
         modeList.add(endlessMode);
         modeList.add(moveLimitedMode);
         modeList.add(timeLimitedMode);
+        modeList.add(constantMode);
     }
 
     public void update(GameLogic logic) {
@@ -195,6 +198,7 @@ public class ModeSwitcher {
         endlessMode.load(context);
         moveLimitedMode.load(context);
         timeLimitedMode.load(context);
+        constantMode.load(context);
     }
 
     public GameMode getSelectedMode() {
