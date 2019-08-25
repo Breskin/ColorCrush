@@ -42,7 +42,7 @@ public class GameLogic {
         }
 
         if (gameFinished && currentMode.isClosed()) {
-            prepare();
+            gameView.open();
             currentMode.reset();
         }
     }
@@ -77,6 +77,8 @@ public class GameLogic {
         gameDuration = 0;
         points = 0;
         pointsVisible = 0;
+
+        currentMode.reset();
     }
 
     public void finishGame() {

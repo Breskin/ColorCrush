@@ -3,7 +3,7 @@ package com.github.breskin.squares.gameplay;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
+import android.graphics.Path;
 import android.view.MotionEvent;
 
 import com.github.breskin.squares.RenderView;
@@ -19,6 +19,7 @@ public class ModeSwitcher {
 
     private GameView gameView;
     private Paint paint;
+    private Path downArrow;
 
     private List<GameMode> modeList;
 
@@ -27,6 +28,8 @@ public class ModeSwitcher {
     private TimeLimitedMode timeLimitedMode = new TimeLimitedMode();
 
     private int selectedMode = 0;
+    private float alpha = 0, translation = 0, switchAlpha = 0, switchTranslation = 0, switchTargetAlpha = 0, switchTargetTranslation = 0;
+    private boolean opening = false, closing = false, openingNext = false, switchButtonHighlight = false;
 
     public ModeSwitcher(GameView gameView) {
         this.gameView = gameView;
@@ -42,20 +45,89 @@ public class ModeSwitcher {
     }
 
     public void update(GameLogic logic) {
+        if (downArrow == null) {
+            downArrow = new Path();
+            downArrow.moveTo(-RenderView.ViewWidth * 0.075f, -RenderView.ViewWidth * 0.035f);
+            downArrow.lineTo(0, 0);
+            downArrow.lineTo(RenderView.ViewWidth * 0.075f, -RenderView.ViewWidth * 0.035f);
+        }
+
         if (!logic.isGameStarted())
             logic.setCurrentMode(modeList.get(selectedMode));
+
+        if (logic.isGameStarted() && !closing)
+            close();
+
+        if (closing) {
+            translation += (RenderView.ViewWidth * 0.6f - translation) * 0.085f;
+            alpha += (0 - alpha) * 0.15f;
+
+            switchTranslation = translation;
+            switchAlpha = alpha;
+        } else if (opening) {
+            translation += (0 - translation) * 0.085f;
+            alpha += (1 - alpha) * 0.05f;
+
+            switchTranslation = translation;
+            switchAlpha = alpha;
+        } else if (openingNext) {
+            switchTranslation += (switchTargetTranslation - switchTranslation) * 0.12f;
+            switchAlpha += (switchTargetAlpha - switchAlpha) * 0.25f;
+
+            if (switchAlpha < 0.05f) {
+                switchAlpha = 0.05f;
+                switchTargetAlpha = 1;
+                switchTargetTranslation = 0;
+                switchTranslation = -RenderView.ViewWidth * 0.4f;
+
+                selectedMode++;
+                if (selectedMode >= modeList.size()) selectedMode = 0;
+            }
+        }
     }
 
     public void render(Canvas canvas) {
-        if (!gameView.getGameLogic().isGameStarted()) {
-            GameMode selected = modeList.get(selectedMode);
+        GameMode selected = modeList.get(selectedMode);
 
-            paint.setTextSize(RenderView.ViewWidth * 0.07f);
-            paint.setColor(Color.WHITE);
+        float margin = (gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.3f) * 0.5f;
 
-            canvas.drawText(selected.getName(), 20, paint.getTextSize() * 1.5f, paint);
-            canvas.drawText(selected.getDescription(), 20, paint.getTextSize() * 3f, paint);
+        paint.setTextSize(RenderView.ViewWidth * 0.07f);
+        paint.setColor(Color.WHITE);
+        paint.setAlpha((int)(255 * switchAlpha));
+        paint.setStyle(Paint.Style.FILL);
+
+        canvas.drawText(selected.getName(), (RenderView.ViewWidth - paint.measureText(selected.getName())) * 0.5f,  switchTranslation + margin + paint.getTextSize() * 1.5f, paint);
+        margin += paint.getTextSize() * 1.5f;
+
+        paint.setTextSize(RenderView.ViewWidth * 0.05f);
+        canvas.drawText(selected.getDescription(), (RenderView.ViewWidth - paint.measureText(selected.getDescription())) * 0.5f, switchTranslation + margin + paint.getTextSize() * 1.75f, paint);
+
+        if (switchButtonHighlight) {
+            paint.setAlpha(64);
+            canvas.drawRect(RenderView.ViewWidth * 0.05f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.14f, RenderView.ViewWidth * 0.95f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.025f, paint);
         }
+
+        paint.setAlpha((int)(255 * alpha));
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(RenderView.ViewWidth * 0.008f);
+        canvas.save();
+        canvas.translate(RenderView.ViewWidth * 0.5f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.065f);
+        canvas.drawPath(downArrow, paint);
+        canvas.restore();
+    }
+
+    public void open() {
+        alpha = 0;
+        translation = -RenderView.ViewWidth * 0.5f;
+        opening = true;
+        closing = false;
+    }
+
+    public void close() {
+        alpha = 1;
+        translation = 0;
+        closing = true;
+        opening = false;
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -64,24 +136,39 @@ public class ModeSwitcher {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
+                if (!gameView.getGameLogic().isGameStarted() && y > translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.15f && y < translation + gameView.getGameLogic().getBoard().getTranslation().y) {
+                    switchButtonHighlight = true;
+                }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-
+                if (!(!gameView.getGameLogic().isGameStarted() && y > gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.15f && y < gameView.getGameLogic().getBoard().getTranslation().y)) {
+                    switchButtonHighlight = false;
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
-                if (!gameView.getGameLogic().isGameStarted() && y < gameView.getGameLogic().getBoard().getTranslation().y * 0.8f) {
-                    selectedMode++;
+                if (switchButtonHighlight) {
+                    next();
 
-                    if (selectedMode >= modeList.size())
-                        selectedMode = 0;
+                    switchButtonHighlight = false;
                 }
                 break;
         }
 
         return false;
+    }
+
+    private void next() {
+        if (opening) {
+            switchAlpha = alpha = 1;
+            switchTranslation = translation = 0;
+            opening = false;
+        }
+
+        openingNext = true;
+        switchTargetAlpha = 0;
+        switchTargetTranslation = RenderView.ViewWidth * 0.6f;
     }
 
     public GameMode getSelectedMode() {

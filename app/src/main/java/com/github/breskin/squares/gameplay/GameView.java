@@ -30,8 +30,8 @@ public class GameView implements View {
 
     @Override
     public void render(Canvas canvas) {
-        gameLogic.render(canvas);
         modeSwitcher.render(canvas);
+        gameLogic.render(canvas);
     }
 
     @Override
@@ -54,6 +54,7 @@ public class GameView implements View {
     @Override
     public void open() {
         gameLogic.prepare();
+        modeSwitcher.open();
     }
 
     public RenderView getRenderView() {
