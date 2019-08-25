@@ -2,6 +2,7 @@ package com.github.breskin.squares.gameplay;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.github.breskin.squares.RenderView;
@@ -25,16 +26,24 @@ public class GameLogic {
     }
 
     public void update() {
+        if (currentMode == null)
+            currentMode = gameView.getSelectedMode();
+
         board.update(this);
 
         pointsVisible += (points - pointsVisible) * 0.1f;
 
         if (gameStarted) {
-            if (!gameFinished)
+            if (!gameFinished && !currentMode.isLocked())
                 gameDuration += RenderView.FrameTime;
 
             if (currentMode != null)
                 currentMode.update(this);
+        }
+
+        if (gameFinished && currentMode.isClosed()) {
+            prepare();
+            currentMode.reset();
         }
     }
 
@@ -48,14 +57,14 @@ public class GameLogic {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        boolean boardTouch = board.onTouchEvent(event);
+        boolean boardTouch = board.onTouchEvent(this, event);
 
         if (boardTouch && !gameStarted) {
             startGame();
         }
 
         if (gameFinished) {
-            prepare();
+            currentMode.close();
         }
 
         return boardTouch;
@@ -68,8 +77,6 @@ public class GameLogic {
         gameDuration = 0;
         points = 0;
         pointsVisible = 0;
-
-        currentMode = gameView.getSelectedMode();
     }
 
     public void finishGame() {
@@ -85,7 +92,7 @@ public class GameLogic {
 
             return true;
         } else if (gameStarted && gameFinished) {
-            prepare();
+            currentMode.close();
 
             return true;
         }
@@ -96,15 +103,36 @@ public class GameLogic {
     public void prepare() {
         gameFinished = false;
         gameStarted = false;
-        board.setTranslation(new PointF(Block.getSize() * Block.SIZE_MULTIPLIER, RenderView.ViewHeight - RenderView.ViewWidth));
+        board.setTranslation(new PointF(Block.getSize() * Block.SIZE_MULTIPLIER, RenderView.ViewHeight - RenderView.ViewWidth - ((float)RenderView.ViewHeight / RenderView.ViewWidth - 1.5f) * Block.getSize() * 2));
         board.generate();
+    }
+
+    public void onMoveMade() {
+        moveCount++;
+        currentMode.onMoveMade();
     }
 
     public Board getBoard() {
         return board;
     }
 
+    public void setCurrentMode(GameMode currentMode) {
+        this.currentMode = currentMode;
+    }
+
     public ParticleSystem getParticleSystem() {
         return gameView.getRenderView().getParticleSystem();
+    }
+
+    public GameMode getCurrentMode() {
+        return currentMode;
+    }
+
+    public boolean isGameFinished() {
+        return gameFinished;
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
     }
 }

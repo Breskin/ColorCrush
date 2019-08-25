@@ -80,7 +80,7 @@ public class Block {
         canvas.drawRoundRect(position.x - currentExpansion * getSize(), position.y - currentExpansion * getSize(), position.x + (1 + currentExpansion) * getSize(), position.y + (1 + currentExpansion) * getSize(), getSize() * 0.1f, getSize() * 0.1f, paint);
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(GameLogic logic, MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
 
@@ -88,7 +88,7 @@ public class Block {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (x > position.x && y > position.y && x < position.x + getSize() && y < position.y + getSize()) {
+                if (!logic.getCurrentMode().isLocked() && x > position.x && y > position.y && x < position.x + getSize() && y < position.y + getSize()) {
                     targetExpansion = 0.07f;
 
                     selected = true;
@@ -193,6 +193,10 @@ public class Block {
 
     public BlockColor getCurrentColor() {
         return currentColor;
+    }
+
+    public float getCurrentExpansion() {
+        return currentExpansion;
     }
 
     public static float getSize() {

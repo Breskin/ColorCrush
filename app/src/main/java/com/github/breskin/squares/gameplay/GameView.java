@@ -5,40 +5,45 @@ import android.view.MotionEvent;
 
 import com.github.breskin.squares.RenderView;
 import com.github.breskin.squares.View;
-import com.github.breskin.squares.gameplay.modes.EndlessMode;
 import com.github.breskin.squares.gameplay.modes.GameMode;
+import com.github.breskin.squares.gameplay.modes.TimeLimitedMode;
 
 public class GameView implements View {
 
     private RenderView renderView;
 
     private GameLogic gameLogic;
+    private ModeSwitcher modeSwitcher;
 
     public GameView(RenderView renderView) {
         this.renderView = renderView;
 
         gameLogic = new GameLogic(this);
+        modeSwitcher = new ModeSwitcher(this);
     }
 
     @Override
     public void update() {
+        modeSwitcher.update(gameLogic);
         gameLogic.update();
     }
 
     @Override
     public void render(Canvas canvas) {
         gameLogic.render(canvas);
+        modeSwitcher.render(canvas);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        gameLogic.onTouchEvent(event);
+        if (modeSwitcher.onTouchEvent(event)) return true;
+        else if (gameLogic.onTouchEvent(event)) return true;
 
         return false;
     }
 
     public GameMode getSelectedMode() {
-        return new EndlessMode();
+        return modeSwitcher.getSelectedMode();
     }
 
     @Override
@@ -53,5 +58,9 @@ public class GameView implements View {
 
     public RenderView getRenderView() {
         return renderView;
+    }
+
+    public GameLogic getGameLogic() {
+        return gameLogic;
     }
 }

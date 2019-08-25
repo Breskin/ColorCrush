@@ -93,7 +93,7 @@ public class Board {
                 blocks[newX][newY] = selectedBlock;
                 selectedBlock.moveTo(newX, newY);
 
-                logic.moveCount++;
+                logic.onMoveMade();
             }
         }
     }
@@ -196,20 +196,31 @@ public class Board {
         return blocksInPatterns;
     }
 
+    public boolean canFinish() {
+        for (int x = 0; x < 5; x++) {
+            for (int y = 0; y < 5; y++) {
+                if (Math.abs(blocks[x][y].getCurrentExpansion() - 0) > 0.0025)
+                    return false;
+            }
+        }
+
+        return findPatterns().size() == 0;
+    }
+
     public void addFloatingPoint(Block block, int points) {
         PointF position = block.getCalculatedPosition();
 
         floatingPoints.add(new FloatingPoint(position.x + Block.getSize() * 0.5f, position.y, points));
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(GameLogic logic, MotionEvent event) {
         if (blocks[0][0] == null)
             return false;
 
         boolean handled = false;
         for (int x = 0; x < 5; x++) {
             for (int y = 0; y < 5; y++) {
-                if (blocks[x][y].onTouchEvent(event)) {
+                if (blocks[x][y].onTouchEvent(logic, event)) {
                     handled = true;
                     break;
                 }
@@ -224,5 +235,9 @@ public class Board {
 
     public void setTranslation(PointF translation) {
         this.translation = translation;
+    }
+
+    public PointF getTranslation() {
+        return translation;
     }
 }
