@@ -7,6 +7,10 @@ import android.view.MotionEvent;
 
 import com.github.breskin.squares.RenderView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 public class Board {
 
     private Block[][] blocks;
@@ -14,8 +18,13 @@ public class Board {
 
     private Block selectedBlock;
 
+    private Stack<Block> blocksInPatterns;
+    private List<FloatingPoint> floatingPoints;
+
     public Board() {
         blocks = new Block[5][5];
+        blocksInPatterns = new Stack<>();
+        floatingPoints = new ArrayList<>();
 
         generate();
     }
@@ -24,14 +33,24 @@ public class Board {
         for (int x = 0; x < 5; x++) {
             for (int y = 0; y < 5; y++) {
                 blocks[x][y] = new Block(this, BlockColor.random(), x, y);
+
+                blocks[x][y].getCurrentPosition().x = (x - 2) * 5;
+                blocks[x][y].getCurrentPosition().y = (y - 9) * 5;
             }
+        }
+
+        findPatterns();
+
+        while (blocksInPatterns.size() > 0) {
+            for (Block block : blocksInPatterns)
+                block.setColor(BlockColor.random());
+
+            findPatterns();
         }
     }
 
-    public void update() {
-        translation = new PointF(Block.getSize() * Block.SIZE_MULTIPLIER, RenderView.ViewHeight - RenderView.ViewWidth);
-
-        updateSelectedMovement();
+    public void update(GameLogic logic) {
+        updateSelectedMovement(logic);
 
         for (int x = 0; x < 5; x++) {
             for (int y = 0; y < 5; y++) {
@@ -39,9 +58,27 @@ public class Board {
                 blocks[x][y].update();
             }
         }
+
+        for (int i = 0; i < floatingPoints.size(); i++) {
+            floatingPoints.get(i).update();
+
+            if (!floatingPoints.get(i).alive()) {
+                floatingPoints.remove(i);
+                i--;
+            }
+        }
     }
 
-    private void updateSelectedMovement() {
+    public void clear(GameLogic logic) {
+        for (int x = 0; x < 5; x++) {
+            for (int y = 0; y < 5; y++) {
+                blocks[x][y].destroy(logic);
+                blocks[x][y].setColor(BlockColor.None);
+            }
+        }
+    }
+
+    private void updateSelectedMovement(GameLogic logic) {
         if (selectedBlock != null) {
             int newX = Math.round(selectedBlock.getCurrentPosition().x), newY = Math.round(selectedBlock.getCurrentPosition().y);
 
@@ -55,6 +92,8 @@ public class Board {
 
                 blocks[newX][newY] = selectedBlock;
                 selectedBlock.moveTo(newX, newY);
+
+                logic.moveCount++;
             }
         }
     }
@@ -76,10 +115,91 @@ public class Board {
 
         if (selectedBlock != null)
             selectedBlock.render(canvas);
+
+        for (FloatingPoint point : floatingPoints)
+            point.render(canvas);
     }
 
     public void setSelectedBlock(Block block) {
         selectedBlock = block;
+    }
+
+    public Block getBlock(int x, int y) {
+        return blocks[x][y];
+    }
+
+    public Stack<Block> findPatterns() {
+        blocksInPatterns.clear();
+
+        for (int x = 0; x < 5; x++) {
+            int length = 1;
+            blocksInPatterns.push(blocks[x][0]);
+
+            for (int y = 1; y < 5; y++) {
+                if (blocks[x][y - 1].getCurrentColor() == blocks[x][y].getCurrentColor()) {
+                    length++;
+                    blocksInPatterns.push(blocks[x][y]);
+                } else {
+                    if (length < 3) {
+                        while (length > 0) {
+                            blocksInPatterns.pop();
+                            length--;
+                        }
+
+                        length = 1;
+                        blocksInPatterns.push(blocks[x][y]);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (length < 3) {
+                while (length > 0) {
+                    blocksInPatterns.pop();
+                    length--;
+                }
+            }
+        }
+
+        for (int y = 0; y < 5; y++) {
+            int length = 1;
+            blocksInPatterns.push(blocks[0][y]);
+
+            for (int x = 1; x < 5; x++) {
+                if (blocks[x - 1][y].getCurrentColor() == blocks[x][y].getCurrentColor()) {
+                    length++;
+                    blocksInPatterns.push(blocks[x][y]);
+                } else {
+                    if (length < 3) {
+                        while (length > 0) {
+                            blocksInPatterns.pop();
+                            length--;
+                        }
+
+                        length = 1;
+                        blocksInPatterns.push(blocks[x][y]);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (length < 3) {
+                while (length > 0) {
+                    blocksInPatterns.pop();
+                    length--;
+                }
+            }
+        }
+        
+        return blocksInPatterns;
+    }
+
+    public void addFloatingPoint(Block block, int points) {
+        PointF position = block.getCalculatedPosition();
+
+        floatingPoints.add(new FloatingPoint(position.x + Block.getSize() * 0.5f, position.y, points));
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -99,23 +219,10 @@ public class Board {
                 break;
         }
 
-        /*float x = event.getX();
-        float y = event.getY();
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-
-                break;
-
-            case MotionEvent.ACTION_UP:
-
-                break;
-        }*/
-
         return handled;
+    }
+
+    public void setTranslation(PointF translation) {
+        this.translation = translation;
     }
 }

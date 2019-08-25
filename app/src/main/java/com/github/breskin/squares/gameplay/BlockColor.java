@@ -55,13 +55,17 @@ public enum BlockColor {
                 return BlockColor.Green;
         }
 
-        return BlockColor.Red;
+        return BlockColor.None;
     }
 
     public static BlockColor random() {
         int next = random.nextInt(6);
 
-        switch (next) {
+        return fromId(next);
+    }
+
+    public static BlockColor fromId(int id) {
+        switch (id) {
             case 0:
                 return BlockColor.Purple;
             case 1:
@@ -76,6 +80,25 @@ public enum BlockColor {
                 return BlockColor.Red;
         }
 
-        return BlockColor.Red;
+        return BlockColor.None;
+    }
+
+    public int getId() {
+        switch (this) {
+            case Purple:
+                return 0;
+            case Blue:
+                return 1;
+            case Cyan:
+                return 2;
+            case Green:
+                return 3;
+            case Yellow:
+                return 4;
+            case Red:
+                return 5;
+        }
+
+        return 6;
     }
 }

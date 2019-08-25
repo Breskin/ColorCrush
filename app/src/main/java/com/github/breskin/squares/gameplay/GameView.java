@@ -5,6 +5,8 @@ import android.view.MotionEvent;
 
 import com.github.breskin.squares.RenderView;
 import com.github.breskin.squares.View;
+import com.github.breskin.squares.gameplay.modes.EndlessMode;
+import com.github.breskin.squares.gameplay.modes.GameMode;
 
 public class GameView implements View {
 
@@ -15,7 +17,7 @@ public class GameView implements View {
     public GameView(RenderView renderView) {
         this.renderView = renderView;
 
-        gameLogic = new GameLogic();
+        gameLogic = new GameLogic(this);
     }
 
     @Override
@@ -35,13 +37,21 @@ public class GameView implements View {
         return false;
     }
 
+    public GameMode getSelectedMode() {
+        return new EndlessMode();
+    }
+
     @Override
     public boolean onBackPressed() {
-        return false;
+        return gameLogic.onBackPressed();
     }
 
     @Override
     public void open() {
-        gameLogic.getBoard().generate();
+        gameLogic.prepare();
+    }
+
+    public RenderView getRenderView() {
+        return renderView;
     }
 }

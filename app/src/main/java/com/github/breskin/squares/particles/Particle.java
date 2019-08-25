@@ -31,12 +31,12 @@ public class Particle {
         this.g = cg - random.nextInt(90); if (this.g < 0) this.g = 0; if (this.g > 255) this.g = 255;
         this.b = cb - random.nextInt(90); if (this.b < 0) this.b = 0; if (this.b > 255) this.b = 255;
 
-        velocity = new PointF(RenderView.ViewWidth / 90 * (random.nextFloat() - 0.5f), RenderView.ViewHeight / 90 * (random.nextFloat() - 0.5f));
+        velocity = new PointF(RenderView.ViewWidth * 0.01f * (random.nextFloat() - 0.5f), RenderView.ViewHeight * 0.01f * (random.nextFloat() - 0.5f));
     }
 
     public void update() {
-        position.x += velocity.x;
-        position.y += velocity.y;
+        position.x += velocity.x * (RenderView.FrameTime / 16f);
+        position.y += velocity.y * (RenderView.FrameTime / 16f);
 
         rotation += rotationSpeed * (RenderView.FrameTime / 16f);
         if (rotation > 360) rotation -= 360;
