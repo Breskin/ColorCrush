@@ -1,33 +1,3 @@
 <resources>
     <string name="app_name" translatable="false">ColorCrush</string>
-    <string name="gamemode_infinite">Infinite</string>
-    <string name="gamemode_timelimited">Limited time</string>
-    <string name="gamemode_movelimited">Limited moves</string>
-    <string name="gamemode_infinite_description">Play without limits</string>
-    <string name="gamemode_timelimited_description">Play with time limited to %1$d minutes</string>
-    <string name="gamemode_movelimited_description">Play with number of moves limited to %1$d</string>
-    <string name="results_yourscore">Your score:</string>
-    <string name="results_time">Time: %1$s</string>
-    <string name="results_moves">Moves: %1$d</string>
-    <string name="results_timeleft">Time left: %1$s</string>
-    <string name="results_movesleft">Moves left: %1$d</string>
-    <string name="gamemode_timelimited_one_description">Play with time limited to %1$d minute</string>
-    <string name="scoreboard_bestscores">Best scores</string>
-    <string name="results_newhigh">Best score so far!</string>
-    <string name="scoreboard_today">Today</string>
-    <string name="scoreboard_alltime">All time</string>
-    <string name="results_today_high">Best score today!</string>
-    <string name="info_cycle">This game is about moving colored blocks. That\'s it.{n}{n}Adjust mode, and start playing - match three or more blocks of the same color in a row and they will explode! Literally.{n}(Should you want to restart the game, tap and hold anywhere in the upper part of the screen.){n}{n}But there\'s a twist: every time you move a block, the one displaced by it changes color in cycle:</string>
-    <string name="info_tips">If you would want to contact me, tap the logo below.</string>
-    <string name="achievement_unlocked">Achievement unlocked</string>
-    <string name="achievement_games_played">Play %1$d games</string>
-    <string name="achievement_no_moves">All you had to do was move some squares...</string>
-    <string name="achievement_no_points">Those were some pretty pointless moves!</string>
-    <string name="achievement_heart">Wholeheartedly...</string>
-    <string name="achievement_over_5000">You are bored, aren\'t you?</string>
-    <string name="achievement_over_9000" translatable="false">It\'s over 9000!</string>
-    <string name="gamemode_untilpointless">Keep destroying</string>
-    <string name="gamemode_untilpointless_description">Play until you make nondestructive move.</string>
-    <string name="achievement_checkboard">That\'s almost a checkboard!</string>
-    <string name="games_played">Games played: %1$d</string>
 </resources>
