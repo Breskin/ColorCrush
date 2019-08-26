@@ -3,6 +3,7 @@ package com.github.breskin.squares.gameplay.modes;
 import android.content.Context;
 import android.graphics.Canvas;
 
+import com.github.breskin.squares.DataManager;
 import com.github.breskin.squares.R;
 import com.github.breskin.squares.gameplay.GameLogic;
 
@@ -53,6 +54,13 @@ public class TimeLimitedMode extends GameMode {
     }
 
     @Override
+    public void setMultiplier(int multiplier) {
+        super.setMultiplier(multiplier);
+
+        DataManager.getPreferences().edit().putInt("mode-timelimited-multiplier", multiplier).apply();
+    }
+
+    @Override
     public String getDescription() {
         if (multiplier == 1)
             return String.format(description_one, multiplier);
@@ -68,5 +76,7 @@ public class TimeLimitedMode extends GameMode {
         description = context.getString(R.string.mode_timelimited_description);
         description_one = context.getString(R.string.mode_timelimited_description_one);
         remainingTime = context.getString(R.string.info_time_left);
+
+        multiplier = DataManager.getPreferences().getInt("mode-timelimited-multiplier", 1);
     }
 }

@@ -3,6 +3,7 @@ package com.github.breskin.squares.gameplay.modes;
 import android.content.Context;
 import android.graphics.Canvas;
 
+import com.github.breskin.squares.DataManager;
 import com.github.breskin.squares.R;
 import com.github.breskin.squares.gameplay.GameLogic;
 
@@ -54,6 +55,13 @@ public class MoveLimitedMode extends GameMode {
     }
 
     @Override
+    public void setMultiplier(int multiplier) {
+        super.setMultiplier(multiplier);
+
+        DataManager.getPreferences().edit().putInt("mode-movelimited-multiplier", multiplier).apply();
+    }
+
+    @Override
     public String getDescription() {
         return String.format(description, BASE_MOVE_LIMIT * multiplier);
     }
@@ -65,5 +73,7 @@ public class MoveLimitedMode extends GameMode {
         name = context.getString(R.string.mode_movelimited);
         description = context.getString(R.string.mode_movelimited_description);
         remainingMoves = context.getString(R.string.info_moves_left);
+
+        multiplier = DataManager.getPreferences().getInt("mode-movelimited-multiplier", 1);
     }
 }

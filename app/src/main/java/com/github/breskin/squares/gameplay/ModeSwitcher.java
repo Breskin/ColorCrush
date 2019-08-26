@@ -5,8 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.provider.ContactsContract;
 import android.view.MotionEvent;
 
+import com.github.breskin.squares.DataManager;
 import com.github.breskin.squares.MainActivity;
 import com.github.breskin.squares.RenderView;
 import com.github.breskin.squares.gameplay.modes.ConstantMode;
@@ -91,6 +93,7 @@ public class ModeSwitcher {
 
                 selectedMode++;
                 if (selectedMode >= modeList.size()) selectedMode = 0;
+                DataManager.getPreferences().edit().putInt("last-selected_mode", selectedMode).apply();
             }
         }
 
@@ -148,6 +151,10 @@ public class ModeSwitcher {
         opening = false;
     }
 
+    public boolean isClosed() {
+        return closing && alpha < 0.05f;
+    }
+
     public boolean onTouchEvent(MotionEvent event) {
         if (gameView.getGameLogic().isGameStarted())
             return false;
@@ -199,6 +206,8 @@ public class ModeSwitcher {
         moveLimitedMode.load(context);
         timeLimitedMode.load(context);
         constantMode.load(context);
+
+        selectedMode = DataManager.getPreferences().getInt("last-selected_mode", 0);
     }
 
     public GameMode getSelectedMode() {

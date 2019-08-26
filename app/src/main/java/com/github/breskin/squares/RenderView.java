@@ -12,10 +12,11 @@ import android.view.SurfaceView;
 
 import com.github.breskin.squares.gameplay.GameView;
 import com.github.breskin.squares.particles.ParticleSystem;
+import com.github.breskin.squares.scoreboard.ScoreboardView;
 
 public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
 
-    public enum ViewType { None, Game }
+    public enum ViewType { None, Game, Scoreboard }
 
     public static int ViewHeight = 0, ViewWidth = 0, FrameTime = 0;
 
@@ -29,6 +30,7 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
     private ParticleSystem particleSystem;
 
     private GameView gameView;
+    private ScoreboardView scoreboardView;
 
     public RenderView(Context context) {
         super(context);
@@ -43,11 +45,15 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
 
         gameView = new GameView(this);
         gameView.load(context);
+
+        scoreboardView = new ScoreboardView(this);
+        scoreboardView.load(context);
     }
 
     private void render(Canvas canvas) {
         switch (currentView) {
             case Game: gameView.update(); gameView.render(canvas); break;
+            case Scoreboard: scoreboardView.update(); scoreboardView.render(canvas); break;
         }
 
         particleSystem.update();
@@ -61,6 +67,7 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
 
         switch (currentView) {
             case Game: gameView.onTouchEvent(event); break;
+            case Scoreboard: scoreboardView.onTouchEvent(event); break;
         }
 
         return true;
@@ -71,12 +78,14 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
 
         switch (currentView) {
             case Game: gameView.open(); break;
+            case Scoreboard: scoreboardView.open(); break;
         }
     }
 
     public boolean onBackPressed() {
         switch (currentView) {
             case Game: return gameView.onBackPressed();
+            case Scoreboard: return scoreboardView.onBackPressed();
         }
 
         return false;

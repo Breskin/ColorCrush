@@ -23,7 +23,7 @@ public class GameView implements View {
     private GameLogic gameLogic;
     private ModeSwitcher modeSwitcher;
 
-    private boolean expandButtonHighlight = false;
+    private boolean expandButtonHighlight = false, expanding = false;
     private float expandButtonAnimation = 1;
 
     public GameView(RenderView renderView) {
@@ -40,18 +40,22 @@ public class GameView implements View {
     public void update() {
         if (upArrow == null) {
             upArrow = new Path();
-            upArrow.moveTo(-RenderView.ViewWidth * 0.06f, RenderView.ViewWidth * 0.03f);
+            upArrow.moveTo(-RenderView.ViewWidth * 0.055f, RenderView.ViewWidth * 0.03f);
             upArrow.lineTo(0, 0);
-            upArrow.lineTo(RenderView.ViewWidth * 0.06f, RenderView.ViewWidth * 0.03f);
+            upArrow.lineTo(RenderView.ViewWidth * 0.055f, RenderView.ViewWidth * 0.03f);
         }
 
         modeSwitcher.update(gameLogic);
         gameLogic.update();
 
-        if (gameLogic.isGameStarted()) {
+        if (gameLogic.isGameStarted() || expanding) {
             expandButtonAnimation += (1 - expandButtonAnimation) * 0.175f;
         } else if (!gameLogic.isGameStarted()) {
             expandButtonAnimation += (0 - expandButtonAnimation) * 0.175f;
+        }
+
+        if (expanding && modeSwitcher.isClosed()) {
+            renderView.switchView(RenderView.ViewType.Scoreboard);
         }
     }
 
@@ -70,7 +74,7 @@ public class GameView implements View {
 
         paint.setAlpha((int)(255 * Math.abs(expandButtonAnimation - 1)));
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(RenderView.ViewWidth * 0.008f);
+        paint.setStrokeWidth(RenderView.ViewWidth * 0.007f);
         canvas.save();
         canvas.translate(RenderView.ViewWidth * 0.5f, RenderView.ViewHeight - RenderView.ViewWidth * 0.065f + RenderView.ViewWidth * 0.075f * expandButtonAnimation);
         canvas.drawPath(upArrow, paint);
@@ -100,7 +104,10 @@ public class GameView implements View {
 
             case MotionEvent.ACTION_UP:
                 if (expandButtonHighlight) {
-                    Log.w("A", "expand");
+                    gameLogic.getBoard().clear(gameLogic);
+                    modeSwitcher.close();
+
+                    expanding = true;
                 }
 
                 expandButtonHighlight = false;
@@ -121,6 +128,8 @@ public class GameView implements View {
 
     @Override
     public void open() {
+        expanding = false;
+
         gameLogic.prepare();
         modeSwitcher.open();
     }

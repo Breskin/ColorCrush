@@ -3,6 +3,7 @@ package com.github.breskin.squares;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.github.breskin.squares.gameplay.GameLogic;
 import com.github.breskin.squares.gameplay.modes.ConstantMode;
 import com.github.breskin.squares.gameplay.modes.EndlessMode;
 import com.github.breskin.squares.gameplay.modes.GameMode;
@@ -18,7 +19,7 @@ public class DataManager {
     private static SharedPreferences preferences;
     private static GregorianCalendar calendar;
 
-    private static int endlessMaxScore, constantMaxScore, moveLimitedMaxScore[] = new int[5], timeLimitedMaxScore[] = new int[5];
+    private static int gamesPlayed, endlessMaxScore, constantMaxScore, moveLimitedMaxScore[] = new int[5], timeLimitedMaxScore[] = new int[5];
     private static int todayEndlessMaxScore, todayConstantMaxScore, todayMoveLimitedMaxScore[] = new int[5], todayTimeLimitedMaxScore[] = new int[5];
 
     public static void init(Context context) {
@@ -26,6 +27,7 @@ public class DataManager {
         calendar = new GregorianCalendar();
         calendar.setTime(new Date());
 
+        gamesPlayed = preferences.getInt("games-played-count", 0);
         endlessMaxScore = preferences.getInt("high-score-infinite", 0);
         constantMaxScore = preferences.getInt("high-score-until-pointless", 0);
 
@@ -56,14 +58,14 @@ public class DataManager {
         }
     }
 
-    public static ScoreType checkScore(GameMode mode, int score) {
-        int index = mode.getMultiplier() - 1;
+    public static ScoreType checkScore(GameLogic logic, int score) {
+        int index = logic.getCurrentMode().getMultiplier() - 1;
         if (index < 0 || index > 4)
             return ScoreType.Normal;
 
         ScoreType result = ScoreType.Normal;
 
-        if (mode instanceof EndlessMode) {
+        if (logic.getCurrentMode() instanceof EndlessMode) {
             if (score > todayEndlessMaxScore) {
                 todayEndlessMaxScore = score;
 
@@ -83,7 +85,7 @@ public class DataManager {
 
                 result = ScoreType.AllTimeHigh;
             }
-        } else if (mode instanceof TimeLimitedMode) {
+        } else if (logic.getCurrentMode() instanceof TimeLimitedMode) {
             if (score > todayTimeLimitedMaxScore[index]) {
                 todayTimeLimitedMaxScore[index] = score;
 
@@ -103,7 +105,7 @@ public class DataManager {
 
                 result = ScoreType.AllTimeHigh;
             }
-        } else if (mode instanceof MoveLimitedMode) {
+        } else if (logic.getCurrentMode() instanceof MoveLimitedMode) {
             if (score > todayMoveLimitedMaxScore[index]) {
                 todayMoveLimitedMaxScore[index] = score;
 
@@ -123,7 +125,7 @@ public class DataManager {
 
                 result = ScoreType.AllTimeHigh;
             }
-        } else if (mode instanceof ConstantMode) {
+        } else if (logic.getCurrentMode() instanceof ConstantMode) {
             if (score > todayConstantMaxScore) {
                 todayConstantMaxScore = score;
 
@@ -145,7 +147,69 @@ public class DataManager {
             }
         }
 
+        if (logic.moveCount > 10 || logic.gameDuration > 20000) {
+            gamesPlayed++;
+
+            preferences.edit().putInt("games-played-count", gamesPlayed).apply();
+        }
+
         return result;
+    }
+
+    public static SharedPreferences getPreferences() {
+        return preferences;
+    }
+
+    public static int getGamesPlayed() {
+        return gamesPlayed;
+    }
+
+    public static int getEndlessMaxScore() {
+        return endlessMaxScore;
+    }
+
+    public static int getTodayEndlessMaxScore() {
+        return todayEndlessMaxScore;
+    }
+
+    public static int getConstantMaxScore() {
+        return constantMaxScore;
+    }
+
+    public static int getTodayConstantMaxScore() {
+        return todayConstantMaxScore;
+    }
+
+    public static int getTimeLimitedMaxScore(int multiplier) {
+        return timeLimitedMaxScore[multiplier];
+    }
+
+    public static int[] getTimeLimitedMaxScore() {
+        return timeLimitedMaxScore;
+    }
+
+    public static int getTodayTimeLimitedMaxScore(int multiplier) {
+        return todayTimeLimitedMaxScore[multiplier];
+    }
+
+    public static int[] getTodayTimeLimitedMaxScore() {
+        return todayTimeLimitedMaxScore;
+    }
+
+    public static int getMoveLimitedMaxScore(int multiplier) {
+        return moveLimitedMaxScore[multiplier];
+    }
+
+    public static int[] getMoveLimitedMaxScore() {
+        return moveLimitedMaxScore;
+    }
+
+    public static int getTodayMoveLimitedMaxScore(int multiplier) {
+        return todayMoveLimitedMaxScore[multiplier];
+    }
+
+    public static int[] getTodayMoveLimitedMaxScore() {
+        return todayMoveLimitedMaxScore;
     }
 
     public enum ScoreType { Normal, AllTimeHigh, TodayHigh }

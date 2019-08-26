@@ -16,4 +16,8 @@
     <string name="mode_constant_description">Play until you make nondestructive move</string>
     <string name="result_today_high">Best score today!</string>
     <string name="result_new_high">Best score so far!</string>
+    <string name="scoreboard_today">Today</string>
+    <string name="scoreboard_alltime">All time</string>
+    <string name="scoreboard_best_scores">Best scores</string>
+    <string name="games_played">Games played: %1$d</string>
 </resources>

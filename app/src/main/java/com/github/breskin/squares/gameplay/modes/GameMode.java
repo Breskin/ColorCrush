@@ -78,7 +78,7 @@ public class GameMode {
     }
 
     public void checkScore(GameLogic logic) {
-        scoreType = DataManager.checkScore(this, logic.points);
+        scoreType = DataManager.checkScore(logic, logic.points);
     }
 
     protected void checkCondition(GameLogic logic) {
@@ -131,7 +131,7 @@ public class GameMode {
         if (logic.isGameFinished() && scoreType != DataManager.ScoreType.Normal) {
             String msg = (scoreType == DataManager.ScoreType.TodayHigh) ? todayHighText : newHighText;
 
-            paint.setTextSize(RenderView.ViewWidth * 0.06f);
+            paint.setTextSize(RenderView.ViewWidth * 0.065f);
             paint.setAlpha((int)(animationProgress * 255));
             canvas.drawText(msg, (RenderView.ViewWidth - paint.measureText(msg)) * .5f, margin - paint.getTextSize() * 0.5f + (animationProgress - 1) * RenderView.ViewWidth * 0.5f, paint);
         }

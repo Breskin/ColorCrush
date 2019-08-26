@@ -29,7 +29,7 @@ public class FloatingPoint {
     }
 
     public void update() {
-        alpha *= 0.97f;
+        alpha -= 0.01f;
 
         origin.x += velocity.x * RenderView.FrameTime / 16f;
         origin.y += velocity.y * RenderView.FrameTime / 16f;
@@ -39,17 +39,12 @@ public class FloatingPoint {
 
     public void render(Canvas canvas) {
         paint.setColor(Color.argb((int)(255 * alpha), 255, 255, 255));
-        paint.setTextSize(RenderView.ViewWidth * 0.05f);
+        paint.setTextSize(RenderView.ViewWidth * 0.0525f);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawText("+" + points, origin.x - paint.measureText("+" + points) * 0.5f, origin.y, paint);
-
-        paint.setColor(Color.argb((int)(255 * alpha), 0, 0, 0));
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(paint.getTextSize() * 0.035f);
         canvas.drawText("+" + points, origin.x - paint.measureText("+" + points) * 0.5f, origin.y, paint);
     }
 
     public boolean alive() {
-        return alpha > 0.075;
+        return origin.x > -RenderView.ViewWidth * 0.05f && origin.x < RenderView.ViewWidth * 1.05f && origin.y > 0 && origin.y < RenderView.ViewHeight * 1.05f;
     }
 }
