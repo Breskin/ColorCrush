@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.github.breskin.squares.DataManager;
 import com.github.breskin.squares.R;
 import com.github.breskin.squares.RenderView;
 import com.github.breskin.squares.gameplay.Block;
@@ -21,13 +22,15 @@ public class GameMode {
 
     protected static Paint paint = new Paint();
 
-    protected String yourScoreText, moveCountText, timeText;
+    protected String yourScoreText, moveCountText, timeText, newHighText, todayHighText;
 
     protected int pointsTable[];
     protected int multiplier = 1, maxMultiplierValue = 5;
 
     protected boolean closing = false, locked = false, usesMultiplier = false, usesProgressBar = false;
     protected float animationProgress = 0, topMargin = 0, alpha = 0, progress = 0, targetProgress = 0;
+
+    protected DataManager.ScoreType scoreType = DataManager.ScoreType.Normal;
 
     public GameMode() {
         paint.setAntiAlias(true);
@@ -42,6 +45,7 @@ public class GameMode {
 
         progress = targetProgress = 1;
 
+        scoreType = DataManager.ScoreType.Normal;
         locked = false;
         closing = false;
     }
@@ -71,6 +75,10 @@ public class GameMode {
                 alpha += (0 - alpha) * 0.15f * RenderView.FrameTime / 16f;
             }
         }
+    }
+
+    public void checkScore(GameLogic logic) {
+        scoreType = DataManager.checkScore(this, logic.points);
     }
 
     protected void checkCondition(GameLogic logic) {
@@ -117,10 +125,19 @@ public class GameMode {
     protected void drawCustomizedInfo(GameLogic logic, Canvas canvas, String moves, String time) {
         float margin = (logic.getBoard().getTranslation().y - RenderView.ViewWidth * 0.16f) / 2 + topMargin + animationProgress * Block.getSize() * 2;
 
-        paint.setTextSize(RenderView.ViewWidth * 0.05f);
         paint.setColor(Color.WHITE);
-        paint.setAlpha((int)(alpha * 255));
         paint.setStyle(Paint.Style.FILL);
+
+        if (logic.isGameFinished() && scoreType != DataManager.ScoreType.Normal) {
+            String msg = (scoreType == DataManager.ScoreType.TodayHigh) ? todayHighText : newHighText;
+
+            paint.setTextSize(RenderView.ViewWidth * 0.06f);
+            paint.setAlpha((int)(animationProgress * 255));
+            canvas.drawText(msg, (RenderView.ViewWidth - paint.measureText(msg)) * .5f, margin - paint.getTextSize() * 0.5f + (animationProgress - 1) * RenderView.ViewWidth * 0.5f, paint);
+        }
+
+        paint.setTextSize(RenderView.ViewWidth * 0.05f);
+        paint.setAlpha((int)(alpha * 255));
 
         canvas.drawText(moves, RenderView.ViewWidth * 0.01f + (RenderView.ViewWidth * 0.98f - paint.measureText(moves)) * animationProgress * 0.5f,
                 paint.getTextSize() * 2f + (margin + RenderView.ViewWidth * 0.3f) * animationProgress, paint);
@@ -181,6 +198,8 @@ public class GameMode {
         yourScoreText = context.getString(R.string.info_your_score);
         timeText = context.getString(R.string.info_time);
         moveCountText = context.getString(R.string.info_moves);
+        newHighText = context.getString(R.string.result_new_high);
+        todayHighText = context.getString(R.string.result_today_high);
     }
 
     String timeToString(int t) {

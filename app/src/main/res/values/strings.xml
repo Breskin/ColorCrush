@@ -14,4 +14,6 @@
     <string name="info_moves_left">Moves left: %1$d</string>
     <string name="mode_constant">Keep crushing</string>
     <string name="mode_constant_description">Play until you make nondestructive move</string>
+    <string name="result_today_high">Best score today!</string>
+    <string name="result_new_high">Best score so far!</string>
 </resources>

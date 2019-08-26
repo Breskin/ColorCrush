@@ -37,6 +37,8 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
 
+        DataManager.init(context);
+
         particleSystem = new ParticleSystem();
 
         gameView = new GameView(this);

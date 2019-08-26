@@ -89,6 +89,7 @@ public class GameLogic {
     public void finishGame() {
         gameFinished = true;
         pointsVisible = points;
+        currentMode.checkScore(this);
 
         board.clear(this);
     }
