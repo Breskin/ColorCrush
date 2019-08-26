@@ -118,7 +118,7 @@ public class ModeSwitcher {
 
         paint.setTextSize(MainActivity.fitFontSize(paint, selected.getDescription(), RenderView.ViewWidth * 0.05f, RenderView.ViewWidth * 0.8f));
         canvas.drawText(selected.getDescription(), (RenderView.ViewWidth - paint.measureText(selected.getDescription())) * 0.5f, switchTranslation + margin + paint.getTextSize() * 1.75f, paint);
-        margin += paint.getTextSize() * 3f;
+        margin += paint.getTextSize() * 3.5f;
 
         if (selected.usesMultiplier())
             multiplier.render(canvas, margin);

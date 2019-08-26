@@ -73,7 +73,7 @@ public class ScoreboardView implements View {
             animationTranslation += (RenderView.ViewHeight * 0.5f - animationTranslation) * 0.1f;
             alpha += (0 - alpha) * 0.1f;
 
-            if (alpha < 0.05f)
+            if (alpha < 0.075f)
                 renderView.switchView(RenderView.ViewType.Game);
         } else {
             animationTranslation += (0 - animationTranslation) * 0.1f * (RenderView.FrameTime / 16f);
