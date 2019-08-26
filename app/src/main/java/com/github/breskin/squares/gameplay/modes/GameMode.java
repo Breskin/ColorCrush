@@ -27,8 +27,8 @@ public class GameMode {
     protected int pointsTable[];
     protected int multiplier = 1, maxMultiplierValue = 5;
 
-    protected boolean closing = false, locked = false, usesMultiplier = false, usesProgressBar = false;
-    protected float animationProgress = 0, topMargin = 0, alpha = 0, progress = 0, targetProgress = 0;
+    protected boolean closing = false, locked = false, usesMultiplier = false, usesProgressBar = true;
+    protected float animationProgress = 0, topMargin = 0, alpha = 0, progress = 1, targetProgress = 0;
 
     protected DataManager.ScoreType scoreType = DataManager.ScoreType.Normal;
 

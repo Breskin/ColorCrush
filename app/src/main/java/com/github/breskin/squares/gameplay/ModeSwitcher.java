@@ -122,14 +122,14 @@ public class ModeSwitcher {
 
         if (switchButtonHighlight) {
             paint.setAlpha(64);
-            canvas.drawRect(RenderView.ViewWidth * 0.05f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.14f, RenderView.ViewWidth * 0.95f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.025f, paint);
+            canvas.drawRect(RenderView.ViewWidth * 0.05f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.16f, RenderView.ViewWidth * 0.95f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.045f, paint);
         }
 
         paint.setAlpha((int)(255 * alpha));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(RenderView.ViewWidth * 0.008f);
         canvas.save();
-        canvas.translate(RenderView.ViewWidth * 0.5f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.065f);
+        canvas.translate(RenderView.ViewWidth * 0.5f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.085f);
         canvas.drawPath(downArrow, paint);
         canvas.restore();
     }
@@ -159,13 +159,13 @@ public class ModeSwitcher {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (!gameView.getGameLogic().isGameStarted() && y > translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.15f && y < translation + gameView.getGameLogic().getBoard().getTranslation().y) {
+                if (!gameView.getGameLogic().isGameStarted() && y > translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.16f && y < translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.045f ) {
                     switchButtonHighlight = true;
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (!(!gameView.getGameLogic().isGameStarted() && y > gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.15f && y < gameView.getGameLogic().getBoard().getTranslation().y)) {
+                if (!(!gameView.getGameLogic().isGameStarted() && y > gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.16f && y < gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.045f )) {
                     switchButtonHighlight = false;
                 }
                 break;
@@ -173,9 +173,9 @@ public class ModeSwitcher {
             case MotionEvent.ACTION_UP:
                 if (switchButtonHighlight) {
                     next();
-
-                    switchButtonHighlight = false;
                 }
+
+                switchButtonHighlight = false;
                 break;
         }
 
