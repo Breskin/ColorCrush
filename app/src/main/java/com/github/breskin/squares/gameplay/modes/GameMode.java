@@ -5,13 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.github.breskin.squares.DataManager;
 import com.github.breskin.squares.R;
 import com.github.breskin.squares.RenderView;
 import com.github.breskin.squares.gameplay.Block;
-import com.github.breskin.squares.gameplay.Board;
 import com.github.breskin.squares.gameplay.GameLogic;
 
 import java.util.Stack;
@@ -77,8 +75,8 @@ public class GameMode {
         }
     }
 
-    public void checkScore(GameLogic logic) {
-        scoreType = DataManager.checkScore(logic, logic.points);
+    public void onGameFinished(GameLogic logic) {
+        scoreType = DataManager.onGameFinished(logic);
     }
 
     protected void checkCondition(GameLogic logic) {

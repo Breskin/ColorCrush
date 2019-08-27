@@ -24,6 +24,8 @@ public class Block {
 
     private float currentExpansion = 0, targetExpansion = 0, colorChangeProgress = 0;
 
+    private int pointerId = -1;
+
     private boolean spawnAnimation, selected = false;
 
     public Block(Board board, BlockColor color, int x, int y) {
@@ -81,13 +83,15 @@ public class Block {
     }
 
     public boolean onTouchEvent(GameLogic logic, MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
+        int currentPointer = event.getPointerId(event.getActionIndex());
+        float x = event.getX(event.findPointerIndex(currentPointer));
+        float y = event.getY(event.findPointerIndex(currentPointer));
 
         PointF position = getCalculatedPosition();
 
-        switch (event.getAction()) {
+        switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
                 if (!logic.getCurrentMode().isLocked() && x > position.x && y > position.y && x < position.x + getSize() && y < position.y + getSize()) {
                     targetExpansion = 0.07f;
 
@@ -97,22 +101,33 @@ public class Block {
                     previousTouch.x = x;
                     previousTouch.y = y;
 
+                    pointerId = currentPointer;
+
                     return true;
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 if (!logic.getCurrentMode().isLocked() && selected) {
-                    currentPosition.x += (x - previousTouch.x) / getSize();
-                    currentPosition.y += (y - previousTouch.y) / getSize();
+                    int pointerIndex = event.findPointerIndex(pointerId);
+                    x = event.getX(pointerIndex);
+                    y = event.getY(pointerIndex);
+
+                    if (Math.abs(x - previousTouch.x) < getSize() && Math.abs(y - previousTouch.y) < getSize()) {
+                        currentPosition.x += (x - previousTouch.x) / getSize();
+                        currentPosition.y += (y - previousTouch.y) / getSize();
+                    }
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
-                if (selected) {
+            case MotionEvent.ACTION_POINTER_UP:
+                if (pointerId == currentPointer && selected) {
                     targetExpansion = 0;
 
                     selected = false;
+
+                    pointerId = -1;
                 }
                 break;
         }

@@ -2,7 +2,6 @@ package com.github.breskin.squares.gameplay;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.github.breskin.squares.RenderView;
@@ -89,7 +88,7 @@ public class GameLogic {
     public void finishGame() {
         gameFinished = true;
         pointsVisible = points;
-        currentMode.checkScore(this);
+        currentMode.onGameFinished(this);
 
         board.clear(this);
     }

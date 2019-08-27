@@ -63,7 +63,7 @@ public class DataManager {
         }
     }
 
-    public static ScoreType checkScore(GameLogic logic, int score) {
+    public static ScoreType onGameFinished(GameLogic logic) {
         int index = logic.getCurrentMode().getMultiplier() - 1;
         if (index < 0 || index > 4)
             return ScoreType.Normal;
@@ -71,81 +71,81 @@ public class DataManager {
         ScoreType result = ScoreType.Normal;
 
         if (logic.getCurrentMode() instanceof EndlessMode) {
-            if (score > todayEndlessMaxScore) {
-                todayEndlessMaxScore = score;
+            if (logic.points > todayEndlessMaxScore) {
+                todayEndlessMaxScore = logic.points;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("today-high-score-infinite", todayEndlessMaxScore);
+                editor.putInt(TODAY_HIGH_SCORE_ENDLESS_LABEL, todayEndlessMaxScore);
                 editor.commit();
 
                 result = ScoreType.TodayHigh;
             }
 
-            if (score > endlessMaxScore) {
-                endlessMaxScore = score;
+            if (logic.points > endlessMaxScore) {
+                endlessMaxScore = logic.points;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("high-score-infinite", endlessMaxScore);
+                editor.putInt(HIGH_SCORE_ENDLESS_LABEL, endlessMaxScore);
                 editor.commit();
 
                 result = ScoreType.AllTimeHigh;
             }
         } else if (logic.getCurrentMode() instanceof TimeLimitedMode) {
-            if (score > todayTimeLimitedMaxScore[index]) {
-                todayTimeLimitedMaxScore[index] = score;
+            if (logic.points > todayTimeLimitedMaxScore[index]) {
+                todayTimeLimitedMaxScore[index] = logic.points;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("today-high-score-time-limited-" + index, todayTimeLimitedMaxScore[index]);
+                editor.putInt(TODAY_HIGH_SCORE_TIME_LIMITED_LABEL + index, todayTimeLimitedMaxScore[index]);
                 editor.commit();
 
                 result = ScoreType.TodayHigh;
             }
 
-            if (score > timeLimitedMaxScore[index]) {
-                timeLimitedMaxScore[index] = score;
+            if (logic.points > timeLimitedMaxScore[index]) {
+                timeLimitedMaxScore[index] = logic.points;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("high-score-time-limited-" + index, timeLimitedMaxScore[index]);
+                editor.putInt(HIGH_SCORE_TIME_LIMITED_LABEL + index, timeLimitedMaxScore[index]);
                 editor.commit();
 
                 result = ScoreType.AllTimeHigh;
             }
         } else if (logic.getCurrentMode() instanceof MoveLimitedMode) {
-            if (score > todayMoveLimitedMaxScore[index]) {
-                todayMoveLimitedMaxScore[index] = score;
+            if (logic.points > todayMoveLimitedMaxScore[index]) {
+                todayMoveLimitedMaxScore[index] = logic.points;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("today-high-score-move-limited-" + index, todayMoveLimitedMaxScore[index]);
+                editor.putInt(TODAY_HIGH_SCORE_MOVE_LIMITED_LABEL + index, todayMoveLimitedMaxScore[index]);
                 editor.commit();
 
                 result = ScoreType.TodayHigh;
             }
 
-            if (score > moveLimitedMaxScore[index]) {
-                moveLimitedMaxScore[index] = score;
+            if (logic.points > moveLimitedMaxScore[index]) {
+                moveLimitedMaxScore[index] = logic.points;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("high-score-move-limited-" + index, moveLimitedMaxScore[index]);
+                editor.putInt(HIGH_SCORE_MOVE_LIMITED_LABEL + index, moveLimitedMaxScore[index]);
                 editor.commit();
 
                 result = ScoreType.AllTimeHigh;
             }
         } else if (logic.getCurrentMode() instanceof ConstantMode) {
-            if (score > todayConstantMaxScore) {
-                todayConstantMaxScore = score;
+            if (logic.points > todayConstantMaxScore) {
+                todayConstantMaxScore = logic.points;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("today-high-score-until-pointless", todayConstantMaxScore);
+                editor.putInt(TODAY_HIGH_SCORE_CONSTANT_LABEL, todayConstantMaxScore);
                 editor.commit();
 
                 result = ScoreType.TodayHigh;
             }
 
-            if (score > constantMaxScore) {
-                constantMaxScore = score;
+            if (logic.points > constantMaxScore) {
+                constantMaxScore = logic.points;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("high-score-until-pointless", constantMaxScore);
+                editor.putInt(HIGH_SCORE_CONSTANT_LABEL, constantMaxScore);
                 editor.commit();
 
                 result = ScoreType.AllTimeHigh;
@@ -155,7 +155,7 @@ public class DataManager {
         if (logic.moveCount > 10 || logic.gameDuration > 20000) {
             gamesPlayed++;
 
-            preferences.edit().putInt("games-played-count", gamesPlayed).apply();
+            preferences.edit().putInt(GAMES_PLAYED_COUNT_LABEL, gamesPlayed).apply();
         }
 
         return result;
