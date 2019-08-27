@@ -19,6 +19,11 @@ public class DataManager {
     private static SharedPreferences preferences;
     private static GregorianCalendar calendar;
 
+    private static final String GAMES_PLAYED_COUNT_LABEL = "games-played-count", HIGH_SCORE_ENDLESS_LABEL = "high-score-infinite", HIGH_SCORE_CONSTANT_LABEL = "high-score-until-pointless",
+                                HIGH_SCORE_TIME_LIMITED_LABEL = "high-score-time-limited-", HIGH_SCORE_MOVE_LIMITED_LABEL = "high-score-move-limited-", LAST_DAY_PLAYED_LABEL = "last-day-played",
+                                TODAY_HIGH_SCORE_ENDLESS_LABEL = "today-high-score-infinite", TODAY_HIGH_SCORE_CONSTANT_LABEL = "today-high-score-until-pointless",
+                                TODAY_HIGH_SCORE_TIME_LIMITED_LABEL = "today-high-score-time-limited-", TODAY_HIGH_SCORE_MOVE_LIMITED_LABEL = "today-high-score-move-limited-";
+
     private static int gamesPlayed, endlessMaxScore, constantMaxScore, moveLimitedMaxScore[] = new int[5], timeLimitedMaxScore[] = new int[5];
     private static int todayEndlessMaxScore, todayConstantMaxScore, todayMoveLimitedMaxScore[] = new int[5], todayTimeLimitedMaxScore[] = new int[5];
 
@@ -27,33 +32,33 @@ public class DataManager {
         calendar = new GregorianCalendar();
         calendar.setTime(new Date());
 
-        gamesPlayed = preferences.getInt("games-played-count", 0);
-        endlessMaxScore = preferences.getInt("high-score-infinite", 0);
-        constantMaxScore = preferences.getInt("high-score-until-pointless", 0);
+        gamesPlayed = preferences.getInt(GAMES_PLAYED_COUNT_LABEL, 0);
+        endlessMaxScore = preferences.getInt(HIGH_SCORE_ENDLESS_LABEL, 0);
+        constantMaxScore = preferences.getInt(HIGH_SCORE_CONSTANT_LABEL, 0);
 
         for (int i = 0; i < 5; i++)
-            timeLimitedMaxScore[i] = preferences.getInt("high-score-time-limited-" + i, 0);
+            timeLimitedMaxScore[i] = preferences.getInt(HIGH_SCORE_TIME_LIMITED_LABEL + i, 0);
 
         for (int i = 0; i < 5; i++)
-            moveLimitedMaxScore[i] = preferences.getInt("high-score-move-limited-" + i, 0);
+            moveLimitedMaxScore[i] = preferences.getInt(HIGH_SCORE_MOVE_LIMITED_LABEL + i, 0);
 
 
-        if (preferences.getString("last-day-played", "none").equals(calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH))) {
-            todayEndlessMaxScore = preferences.getInt("today-high-score-infinite", 0);
-            todayConstantMaxScore = preferences.getInt("today-high-score-until-pointless", 0);
+        if (preferences.getString(LAST_DAY_PLAYED_LABEL, "none").equals(calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH))) {
+            todayEndlessMaxScore = preferences.getInt(TODAY_HIGH_SCORE_ENDLESS_LABEL, 0);
+            todayConstantMaxScore = preferences.getInt(TODAY_HIGH_SCORE_CONSTANT_LABEL, 0);
             for (int i = 0; i < 5; i++)
-                todayTimeLimitedMaxScore[i] = preferences.getInt("today-high-score-time-limited-" + i, 0);
+                todayTimeLimitedMaxScore[i] = preferences.getInt(TODAY_HIGH_SCORE_TIME_LIMITED_LABEL + i, 0);
 
             for (int i = 0; i < 5; i++)
-                todayMoveLimitedMaxScore[i] = preferences.getInt("today-high-score-move-limited-" + i, 0);
+                todayMoveLimitedMaxScore[i] = preferences.getInt(TODAY_HIGH_SCORE_MOVE_LIMITED_LABEL + i, 0);
         } else {
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("last-day-played", calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH));
-            editor.putInt("today-high-score-infinite", 0);
+            editor.putString(LAST_DAY_PLAYED_LABEL, calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH));
+            editor.putInt(TODAY_HIGH_SCORE_ENDLESS_LABEL, 0);
             for (int i = 0; i < 5; i++)
-                editor.putInt("today-high-score-time-limited-" + i, 0);
+                editor.putInt(TODAY_HIGH_SCORE_TIME_LIMITED_LABEL + i, 0);
             for (int i = 0; i < 5; i++)
-                editor.putInt("today-high-score-move-limited-" + i, 0);
+                editor.putInt(TODAY_HIGH_SCORE_MOVE_LIMITED_LABEL + i, 0);
             editor.commit();
         }
     }

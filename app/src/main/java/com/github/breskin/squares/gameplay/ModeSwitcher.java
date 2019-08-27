@@ -22,9 +22,14 @@ import java.util.List;
 
 public class ModeSwitcher {
 
+    private static final String LAST_SELECTED_MODE_LABEL = "last-selected-mode";
+
+    private enum State { None, Opening, Closing, Switching }
+
     private GameView gameView;
     private Paint paint;
     private Path downArrow;
+    private State currentState = State.None;
 
     private List<GameMode> modeList;
 
@@ -37,7 +42,7 @@ public class ModeSwitcher {
 
     private int selectedMode = 0;
     private float alpha = 0, translation = 0, switchAlpha = 0, switchTranslation = 0, switchTargetAlpha = 0, switchTargetTranslation = 0;
-    private boolean opening = false, closing = false, openingNext = false, switchButtonHighlight = false;
+    private boolean switchButtonHighlight = false;
 
     public ModeSwitcher(GameView gameView) {
         this.gameView = gameView;
@@ -63,44 +68,54 @@ public class ModeSwitcher {
             downArrow.lineTo(RenderView.ViewWidth * 0.075f, -RenderView.ViewWidth * 0.035f);
         }
 
-        if (!logic.isGameStarted())
-            logic.setCurrentMode(modeList.get(selectedMode));
-
-        if (logic.isGameStarted() && !closing)
+        if (logic.isGameStarted() && currentState != State.Closing)
             close();
 
-        if (closing) {
-            translation += (RenderView.ViewWidth * 0.6f - translation) * 0.085f;
-            alpha += (0 - alpha) * 0.15f;
-
-            switchTranslation = translation;
-            switchAlpha = alpha;
-        } else if (opening) {
-            translation += (0 - translation) * 0.085f;
-            alpha += (1 - alpha) * 0.05f;
-
-            switchTranslation = translation;
-            switchAlpha = alpha;
-        } else if (openingNext) {
-            switchTranslation += (switchTargetTranslation - switchTranslation) * 0.12f;
-            switchAlpha += (switchTargetAlpha - switchAlpha) * 0.25f;
-
-            if (switchAlpha < 0.05f) {
-                switchAlpha = 0.05f;
-                switchTargetAlpha = 1;
-                switchTargetTranslation = 0;
-                switchTranslation = -RenderView.ViewWidth * 0.4f;
-
-                selectedMode++;
-                if (selectedMode >= modeList.size()) selectedMode = 0;
-                DataManager.getPreferences().edit().putInt("last-selected_mode", selectedMode).apply();
-            }
-        }
+        updateAnimations(logic);
 
         multiplier.setAlpha(switchAlpha);
         multiplier.setTranslation(switchTranslation);
         multiplier.setGameMode(modeList.get(selectedMode));
         multiplier.update();
+    }
+
+    private void updateAnimations(GameLogic logic) {
+        switch (currentState) {
+            case Closing:
+                translation += (RenderView.ViewWidth * 0.6f - translation) * 0.085f;
+                alpha += (0 - alpha) * 0.15f;
+
+                switchTranslation = translation;
+                switchAlpha = alpha;
+                break;
+
+            case Opening:
+                translation += (0 - translation) * 0.085f;
+                alpha += (1 - alpha) * 0.05f;
+
+                switchTranslation = translation;
+                switchAlpha = alpha;
+                break;
+
+            case Switching:
+                switchTranslation += (switchTargetTranslation - switchTranslation) * 0.12f;
+                switchAlpha += (switchTargetAlpha - switchAlpha) * 0.25f;
+
+                if (switchAlpha < 0.05f) {
+                    switchAlpha = 0.05f;
+                    switchTargetAlpha = 1;
+                    switchTargetTranslation = 0;
+                    switchTranslation = -RenderView.ViewWidth * 0.4f;
+
+                    selectedMode++;
+                    if (selectedMode >= modeList.size()) selectedMode = 0;
+                    DataManager.getPreferences().edit().putInt(LAST_SELECTED_MODE_LABEL, selectedMode).apply();
+
+                    if (!logic.isGameStarted())
+                        logic.setCurrentMode(modeList.get(selectedMode));
+                }
+                break;
+        }
     }
 
     public void render(Canvas canvas) {
@@ -125,7 +140,7 @@ public class ModeSwitcher {
 
         if (switchButtonHighlight) {
             paint.setAlpha(64);
-            canvas.drawRect(RenderView.ViewWidth * 0.05f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.16f, RenderView.ViewWidth * 0.95f, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.045f, paint);
+            canvas.drawRect(0, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.16f, RenderView.ViewWidth, translation + gameView.getGameLogic().getBoard().getTranslation().y - RenderView.ViewWidth * 0.045f, paint);
         }
 
         paint.setAlpha((int)(255 * alpha));
@@ -140,19 +155,17 @@ public class ModeSwitcher {
     public void open() {
         alpha = 0;
         translation = -RenderView.ViewWidth * 0.5f;
-        opening = true;
-        closing = false;
+        currentState = State.Opening;
     }
 
     public void close() {
         alpha = 1;
         translation = 0;
-        closing = true;
-        opening = false;
+        currentState = State.Closing;
     }
 
     public boolean isClosed() {
-        return closing && alpha < 0.05f;
+        return currentState == State.Closing && alpha < 0.05f;
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -190,13 +203,12 @@ public class ModeSwitcher {
     }
 
     private void next() {
-        if (opening) {
+        if (currentState == State.Opening) {
             switchAlpha = alpha = 1;
             switchTranslation = translation = 0;
-            opening = false;
         }
 
-        openingNext = true;
+        currentState = State.Switching;
         switchTargetAlpha = 0;
         switchTargetTranslation = RenderView.ViewWidth * 0.6f;
     }
@@ -207,7 +219,7 @@ public class ModeSwitcher {
         timeLimitedMode.load(context);
         constantMode.load(context);
 
-        selectedMode = DataManager.getPreferences().getInt("last-selected_mode", 0);
+        selectedMode = DataManager.getPreferences().getInt(LAST_SELECTED_MODE_LABEL, 0);
     }
 
     public GameMode getSelectedMode() {

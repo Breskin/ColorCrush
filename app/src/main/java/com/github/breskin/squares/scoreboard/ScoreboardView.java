@@ -126,7 +126,7 @@ public class ScoreboardView implements View {
         canvas.drawText(timeLimited + ":", RenderView.ViewWidth * 0.05f, margin + translation + animationTranslation + contentFontSize, paint);
         margin += contentFontSize * 1.75f;
 
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5 ; i++) {
             drawRecordMultiplier(canvas, margin, i);
             paint.setColor(Color.argb((int)(255 * alpha), 255, 255, 255));
             canvas.drawText(timeLimitedMaxScore[i]+"", RenderView.ViewWidth * 0.95f - paint.measureText(timeLimitedMaxScore[i] + ""), margin + translation + animationTranslation + contentFontSize, paint);
@@ -140,7 +140,7 @@ public class ScoreboardView implements View {
         canvas.drawText(moveLimited + ":", RenderView.ViewWidth * 0.05f, margin + translation + animationTranslation + contentFontSize, paint);
         margin += contentFontSize * 1.75f;
 
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             drawRecordMultiplier(canvas, margin, i);
             paint.setColor(Color.argb((int)(255 * alpha), 255, 255, 255));
             canvas.drawText(moveLimitedMaxScore[i]+"", RenderView.ViewWidth * 0.95f - paint.measureText(moveLimitedMaxScore[i] + ""), margin + translation + animationTranslation + contentFontSize, paint);
@@ -216,11 +216,11 @@ public class ScoreboardView implements View {
     public void load(Context context) {
         bestScores = context.getString(R.string.scoreboard_best_scores);
         infinite = context.getString(R.string.mode_endless);
-        timeLimited = context.getString(R.string.mode_timelimited);
-        moveLimited = context.getString(R.string.mode_movelimited);
+        timeLimited = context.getString(R.string.mode_time_limited);
+        moveLimited = context.getString(R.string.mode_move_limited);
         untilPointless = context.getString(R.string.mode_constant);
         today = context.getString(R.string.scoreboard_today);
-        allTime = context.getString(R.string.scoreboard_alltime);
+        allTime = context.getString(R.string.scoreboard_all_time);
         gamesPlayed = context.getString(R.string.games_played);
     }
 }

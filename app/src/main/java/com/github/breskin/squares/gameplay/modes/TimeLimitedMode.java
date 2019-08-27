@@ -9,7 +9,10 @@ import com.github.breskin.squares.gameplay.GameLogic;
 
 public class TimeLimitedMode extends GameMode {
 
+    public static final int MAX_MULTIPLIER_VALUE = 5;
+
     private static final int BASE_TIME_LIMIT = 60000;
+    private static final String MULTIPLIER_LABEL = "mode-time-limited-multiplier";
 
     private String remainingTime, description_one;
 
@@ -17,7 +20,7 @@ public class TimeLimitedMode extends GameMode {
 
     public TimeLimitedMode() {
         usesMultiplier = true;
-        maxMultiplierValue = 5;
+        maxMultiplierValue = MAX_MULTIPLIER_VALUE;
         usesProgressBar = true;
     }
 
@@ -57,7 +60,7 @@ public class TimeLimitedMode extends GameMode {
     public void setMultiplier(int multiplier) {
         super.setMultiplier(multiplier);
 
-        DataManager.getPreferences().edit().putInt("mode-timelimited-multiplier", multiplier).apply();
+        DataManager.getPreferences().edit().putInt(MULTIPLIER_LABEL, multiplier).apply();
     }
 
     @Override
@@ -72,11 +75,11 @@ public class TimeLimitedMode extends GameMode {
     public void load(Context context) {
         super.load(context);
 
-        name = context.getString(R.string.mode_timelimited);
-        description = context.getString(R.string.mode_timelimited_description);
-        description_one = context.getString(R.string.mode_timelimited_description_one);
+        name = context.getString(R.string.mode_time_limited);
+        description = context.getString(R.string.mode_time_limited_description);
+        description_one = context.getString(R.string.mode_time_limited_description_one);
         remainingTime = context.getString(R.string.info_time_left);
 
-        multiplier = DataManager.getPreferences().getInt("mode-timelimited-multiplier", 1);
+        multiplier = DataManager.getPreferences().getInt(MULTIPLIER_LABEL, 1);
     }
 }

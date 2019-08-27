@@ -24,7 +24,7 @@ public class Block {
 
     private float currentExpansion = 0, targetExpansion = 0, colorChangeProgress = 0;
 
-    private boolean spawnAnimation = false, selected = false;
+    private boolean spawnAnimation, selected = false;
 
     public Block(Board board, BlockColor color, int x, int y) {
         this.board = board;
@@ -128,7 +128,7 @@ public class Block {
         return false;
     }
 
-    public boolean goingHome() {
+    public boolean isGoingHome() {
         return !selected && (Math.abs(currentPosition.x - targetPosition.x) > 0.05f || Math.abs(currentPosition.y - targetPosition.y) > 0.05f);
     }
 

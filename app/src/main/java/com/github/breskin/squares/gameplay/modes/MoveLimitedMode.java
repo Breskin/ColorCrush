@@ -9,7 +9,10 @@ import com.github.breskin.squares.gameplay.GameLogic;
 
 public class MoveLimitedMode extends GameMode {
 
+    public static final int MAX_MULTIPLIER_VALUE = 5;
+
     private static final int BASE_MOVE_LIMIT = 50;
+    private static final String MULTIPLIER_LABEL = "mode-move-limited-multiplier";
 
     private String remainingMoves;
 
@@ -17,7 +20,7 @@ public class MoveLimitedMode extends GameMode {
 
     public MoveLimitedMode() {
         usesMultiplier = true;
-        maxMultiplierValue = 5;
+        maxMultiplierValue = MAX_MULTIPLIER_VALUE;
         usesProgressBar = true;
     }
 
@@ -58,7 +61,7 @@ public class MoveLimitedMode extends GameMode {
     public void setMultiplier(int multiplier) {
         super.setMultiplier(multiplier);
 
-        DataManager.getPreferences().edit().putInt("mode-movelimited-multiplier", multiplier).apply();
+        DataManager.getPreferences().edit().putInt(MULTIPLIER_LABEL, multiplier).apply();
     }
 
     @Override
@@ -70,10 +73,10 @@ public class MoveLimitedMode extends GameMode {
     public void load(Context context) {
         super.load(context);
 
-        name = context.getString(R.string.mode_movelimited);
-        description = context.getString(R.string.mode_movelimited_description);
+        name = context.getString(R.string.mode_move_limited);
+        description = context.getString(R.string.mode_move_limited_description);
         remainingMoves = context.getString(R.string.info_moves_left);
 
-        multiplier = DataManager.getPreferences().getInt("mode-movelimited-multiplier", 1);
+        multiplier = DataManager.getPreferences().getInt(MULTIPLIER_LABEL, 1);
     }
 }

@@ -2,11 +2,11 @@
     <string name="app_name" translatable="false">ColorCrush</string>
     <string name="mode_endless">Endless</string>
     <string name="mode_endless_description">Play without limits</string>
-    <string name="mode_movelimited">Limited moves</string>
-    <string name="mode_movelimited_description">Play with number of moves limited to %1$d</string>
-    <string name="mode_timelimited">Limited time</string>
-    <string name="mode_timelimited_description">Play with time limited to %1$d minutes</string>
-    <string name="mode_timelimited_description_one">Play with time limited to %1$d minute</string>
+    <string name="mode_move_limited">Limited moves</string>
+    <string name="mode_move_limited_description">Play with number of moves limited to %1$d</string>
+    <string name="mode_time_limited">Limited time</string>
+    <string name="mode_time_limited_description">Play with time limited to %1$d minutes</string>
+    <string name="mode_time_limited_description_one">Play with time limited to %1$d minute</string>
     <string name="info_time">Time: %1$s</string>
     <string name="info_moves">Moves: %1$d</string>
     <string name="info_your_score">Your score:</string>
@@ -17,7 +17,8 @@
     <string name="result_today_high">Best score today!</string>
     <string name="result_new_high">Best score so far!</string>
     <string name="scoreboard_today">Today</string>
-    <string name="scoreboard_alltime">All time</string>
+    <string name="scoreboard_all_time">All time</string>
     <string name="scoreboard_best_scores">Best scores</string>
     <string name="games_played">Games played: %1$d</string>
+    <string name="result_tap_to_continue">Tap anywhere to continue</string>
 </resources>

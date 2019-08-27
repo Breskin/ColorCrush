@@ -1,17 +1,16 @@
 package com.github.breskin.squares.gameplay;
 
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.MotionEvent;
-
-import com.github.breskin.squares.RenderView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 public class Board {
+
+    private int width = 5, height = 5;
 
     private Block[][] blocks;
     private PointF translation;
@@ -22,7 +21,7 @@ public class Board {
     private List<FloatingPoint> floatingPoints;
 
     public Board() {
-        blocks = new Block[5][5];
+        blocks = new Block[width][height];
         blocksInPatterns = new Stack<>();
         floatingPoints = new ArrayList<>();
 
@@ -30,8 +29,8 @@ public class Board {
     }
 
     public void generate() {
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 blocks[x][y] = new Block(this, BlockColor.random(), x, y);
 
                 blocks[x][y].getCurrentPosition().x = (x - 2) * 5;
@@ -52,8 +51,8 @@ public class Board {
     public void update(GameLogic logic) {
         updateSelectedMovement(logic);
 
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 blocks[x][y].setTranslation(translation);
                 blocks[x][y].update();
             }
@@ -70,8 +69,8 @@ public class Board {
     }
 
     public void clear(GameLogic logic) {
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 blocks[x][y].destroy(logic);
                 blocks[x][y].setColor(BlockColor.None);
             }
@@ -85,7 +84,7 @@ public class Board {
             int calculationX = Math.round(selectedBlock.getCurrentPosition().x - 0.15f * Math.signum(selectedBlock.getCurrentPosition().x - selectedBlock.getTargetPosition().x));
             int calculationY = Math.round(selectedBlock.getCurrentPosition().y - 0.15f * Math.signum(selectedBlock.getCurrentPosition().y - selectedBlock.getTargetPosition().y));
 
-            if ((selectedBlock.getTargetPosition().x != calculationX || selectedBlock.getTargetPosition().y != calculationY) && newX >= 0 && newY >= 0 && newX < 5 && newY < 5) {
+            if ((selectedBlock.getTargetPosition().x != calculationX || selectedBlock.getTargetPosition().y != calculationY) && newX >= 0 && newY >= 0 && newX < width && newY < height) {
                 blocks[selectedBlock.getTargetPosition().x][selectedBlock.getTargetPosition().y] = blocks[newX][newY];
                 blocks[selectedBlock.getTargetPosition().x][selectedBlock.getTargetPosition().y].nextColor();
                 blocks[selectedBlock.getTargetPosition().x][selectedBlock.getTargetPosition().y].moveTo(selectedBlock.getTargetPosition().x, selectedBlock.getTargetPosition().y);
@@ -99,16 +98,16 @@ public class Board {
     }
 
     public void render(Canvas canvas) {
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
-                if (blocks[x][y] != selectedBlock && !blocks[x][y].goingHome())
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (blocks[x][y] != selectedBlock && !blocks[x][y].isGoingHome())
                     blocks[x][y].render(canvas);
             }
         }
 
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
-                if (blocks[x][y].goingHome())
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (blocks[x][y].isGoingHome())
                     blocks[x][y].render(canvas);
             }
         }
@@ -131,11 +130,11 @@ public class Board {
     public Stack<Block> findPatterns() {
         blocksInPatterns.clear();
 
-        for (int x = 0; x < 5; x++) {
+        for (int x = 0; x < width; x++) {
             int length = 1;
             blocksInPatterns.push(blocks[x][0]);
 
-            for (int y = 1; y < 5; y++) {
+            for (int y = 1; y < height; y++) {
                 if (blocks[x][y - 1].getTargetColor() == blocks[x][y].getTargetColor()) {
                     length++;
                     blocksInPatterns.push(blocks[x][y]);
@@ -145,12 +144,10 @@ public class Board {
                             blocksInPatterns.pop();
                             length--;
                         }
-
-                        length = 1;
-                        blocksInPatterns.push(blocks[x][y]);
-                    } else {
-                        break;
                     }
+
+                    length = 1;
+                    blocksInPatterns.push(blocks[x][y]);
                 }
             }
 
@@ -162,11 +159,11 @@ public class Board {
             }
         }
 
-        for (int y = 0; y < 5; y++) {
+        for (int y = 0; y < height; y++) {
             int length = 1;
             blocksInPatterns.push(blocks[0][y]);
 
-            for (int x = 1; x < 5; x++) {
+            for (int x = 1; x < width; x++) {
                 if (blocks[x - 1][y].getTargetColor() == blocks[x][y].getTargetColor()) {
                     length++;
                     blocksInPatterns.push(blocks[x][y]);
@@ -176,12 +173,10 @@ public class Board {
                             blocksInPatterns.pop();
                             length--;
                         }
-
-                        length = 1;
-                        blocksInPatterns.push(blocks[x][y]);
-                    } else {
-                        break;
                     }
+
+                    length = 1;
+                    blocksInPatterns.push(blocks[x][y]);
                 }
             }
 
@@ -197,8 +192,8 @@ public class Board {
     }
 
     public boolean canFinish() {
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 if (Math.abs(blocks[x][y].getCurrentExpansion() - 0) > 0.0025)
                     return false;
             }
@@ -218,8 +213,8 @@ public class Board {
             return false;
 
         boolean handled = false;
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 if (blocks[x][y].onTouchEvent(logic, event)) {
                     handled = true;
                     break;

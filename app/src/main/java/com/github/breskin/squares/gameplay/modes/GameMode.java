@@ -22,7 +22,7 @@ public class GameMode {
 
     protected static Paint paint = new Paint();
 
-    protected String yourScoreText, moveCountText, timeText, newHighText, todayHighText;
+    protected String yourScoreText, moveCountText, timeText, newHighText, todayHighText, tapAnywhereText;
 
     protected int pointsTable[];
     protected int multiplier = 1, maxMultiplierValue = 5;
@@ -132,7 +132,7 @@ public class GameMode {
             String msg = (scoreType == DataManager.ScoreType.TodayHigh) ? todayHighText : newHighText;
 
             paint.setTextSize(RenderView.ViewWidth * 0.065f);
-            paint.setAlpha((int)(animationProgress * 255));
+            paint.setAlpha((int)(animationProgress * alpha * 255));
             canvas.drawText(msg, (RenderView.ViewWidth - paint.measureText(msg)) * .5f, margin - paint.getTextSize() * 0.5f + (animationProgress - 1) * RenderView.ViewWidth * 0.5f, paint);
         }
 
@@ -143,6 +143,11 @@ public class GameMode {
                 paint.getTextSize() * 2f + (margin + RenderView.ViewWidth * 0.3f) * animationProgress, paint);
         canvas.drawText(time, RenderView.ViewWidth * 0.99f - paint.measureText(time) - (RenderView.ViewWidth * 0.98f - paint.measureText(time)) * animationProgress * 0.5f,
                 paint.getTextSize() * 2f + (margin + RenderView.ViewWidth * 0.3f + paint.getTextSize() * 1.75f) * animationProgress, paint);
+
+        if (logic.isGameFinished()) {
+            paint.setTextSize(RenderView.ViewWidth * 0.0375f);
+            canvas.drawText(tapAnywhereText, (RenderView.ViewWidth - paint.measureText(tapAnywhereText)) * 0.5f, topMargin - paint.getTextSize() * 2 + RenderView.ViewHeight * 0.65f + RenderView.ViewHeight * 0.35f * animationProgress, paint);
+        }
 
         paint.setTextSize(RenderView.ViewWidth * (0.04f + animationProgress * 0.01f));
         canvas.drawText(yourScoreText, (RenderView.ViewWidth - paint.measureText(yourScoreText)) / 2, margin + paint.getTextSize(), paint);
@@ -200,6 +205,7 @@ public class GameMode {
         moveCountText = context.getString(R.string.info_moves);
         newHighText = context.getString(R.string.result_new_high);
         todayHighText = context.getString(R.string.result_today_high);
+        tapAnywhereText = context.getString(R.string.result_tap_to_continue);
     }
 
     String timeToString(int t) {

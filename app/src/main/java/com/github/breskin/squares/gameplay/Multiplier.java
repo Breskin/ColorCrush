@@ -57,13 +57,7 @@ public class Multiplier {
         float y = event.getY();
 
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (y > translation + lastMargin - radius * 5 && y < translation + lastMargin + radius * 5) {
-                    moveMarker(x);
-                }
-                break;
-
-            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_DOWN: case MotionEvent.ACTION_MOVE:
                 if (y > translation + lastMargin - radius * 5 && y < translation + lastMargin + radius * 5) {
                     moveMarker(x);
                 }
