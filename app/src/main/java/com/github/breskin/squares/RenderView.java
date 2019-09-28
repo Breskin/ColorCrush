@@ -106,7 +106,11 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
 
         while (threadRunning) {
             if (surfaceHolder.getSurface().isValid()) {
-                if (currentView == ViewType.None) switchView(ViewType.Game);
+                if (currentView == ViewType.None)
+                    if (DataManager.isFirstLaunch())
+                        switchView(ViewType.HowTo);
+                    else
+                        switchView(ViewType.Game);
 
                 long time = System.nanoTime() / 1000000;
 

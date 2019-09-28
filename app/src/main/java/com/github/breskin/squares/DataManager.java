@@ -28,6 +28,8 @@ public class DataManager {
     private static int gamesPlayed, endlessMaxScore, constantMaxScore, resettingTimeMaxScore, moveLimitedMaxScore[] = new int[5], timeLimitedMaxScore[] = new int[5];
     private static int todayEndlessMaxScore, todayConstantMaxScore, todayResettingTimeMaxScore, todayMoveLimitedMaxScore[] = new int[5], todayTimeLimitedMaxScore[] = new int[5];
 
+    private static boolean firstLaunch = false;
+
     public static void init(Context context) {
         preferences = context.getSharedPreferences("scoreboard", Context.MODE_PRIVATE);
         calendar = new GregorianCalendar();
@@ -56,6 +58,8 @@ public class DataManager {
             for (int i = 0; i < 5; i++)
                 todayMoveLimitedMaxScore[i] = preferences.getInt(TODAY_HIGH_SCORE_MOVE_LIMITED_LABEL + i, 0);
         } else {
+            firstLaunch = preferences.getString(LAST_DAY_PLAYED_LABEL, "none").equals("none");
+
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(LAST_DAY_PLAYED_LABEL, calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH));
             editor.putInt(TODAY_HIGH_SCORE_ENDLESS_LABEL, 0);
@@ -247,6 +251,10 @@ public class DataManager {
 
     public static int[] getTodayMoveLimitedMaxScore() {
         return todayMoveLimitedMaxScore;
+    }
+
+    public static boolean isFirstLaunch() {
+        return firstLaunch;
     }
 
     public enum ScoreType { Normal, AllTimeHigh, TodayHigh }

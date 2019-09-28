@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="games_played">Rozegrane gry: %1$d</string>
+    <string name="info_moves">Ruchy: %1$d</string>
+    <string name="info_moves_left">Pozostałe ruchy: %1$d</string>
+    <string name="info_time">Czas: %1$s</string>
+    <string name="info_time_left">Pozostały czas: %1$s</string>
+    <string name="info_your_score">Twój wynik:</string>
+    <string name="mode_constant">Ciągła rozwałka</string>
+    <string name="mode_constant_description">Każdy twój ruch musi niszczyć klocki</string>
+    <string name="mode_endless">Nieskończony</string>
+    <string name="mode_endless_description">Graj bez ograniczeń</string>
+    <string name="mode_move_limited">Ograniczone ruchy</string>
+    <string name="mode_move_limited_description">Graj z liczbą ruchów ograniczoną do %1$d</string>
+    <string name="mode_resetting_time">Czas ucieka</string>
+    <string name="mode_resetting_time_description">Krótki licznik resetuje się po każdym wybuchu</string>
+    <string name="mode_time_limited">Ograniczony czas</string>
+    <string name="mode_time_limited_description">Graj z czasem ograniczonym do %1$d minut</string>
+    <string name="mode_time_limited_description_one">Graj z czasem ograniczonym do %1$d minuty</string>
+    <string name="result_new_high">Nowy rekord!</string>
+    <string name="result_tap_to_continue">Dotknij gdziekolwiek aby kontynuować</string>
+    <string name="result_today_high">Dzisiejszy rekord!</string>
+    <string name="scoreboard_all_time">Ogółem</string>
+    <string name="scoreboard_best_scores">Najlepsze wyniki</string>
+    <string name="scoreboard_today">Dzisiaj</string>
+    <string name="tutorial_cycle_info">Kiedy klocki są przesuwane, zmieniają kolor w cyklu:</string>
+</resources>

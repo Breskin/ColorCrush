@@ -31,7 +31,7 @@ public class HowToView implements View {
 
     private float alpha = 0, animationTranslation = 0;
 
-    private String cycleInfo;
+    private String cycleInfo, tapAnywhere;
     private StaticLayout cycleInfoLayout;
     private Bitmap cycle;
 
@@ -83,10 +83,21 @@ public class HowToView implements View {
         paint.setColor(Color.argb((int)(alpha * 255), 255, 255, 255));
         float y = cycle.getHeight() * RenderView.ViewWidth * 0.7f / cycle.getWidth();
         canvas.drawBitmap(cycle, new Rect(0, 0, cycle.getWidth(), cycle.getHeight()), new RectF(RenderView.ViewWidth * 0.15f, margin, RenderView.ViewWidth * 0.85f, margin + y), paint);
+
+
+        paint.setTextSize(RenderView.ViewWidth * 0.0375f);
+        canvas.drawText(tapAnywhere, (RenderView.ViewWidth - paint.measureText(tapAnywhere)) * 0.5f, animationTranslation + RenderView.ViewHeight * 0.975f - paint.getTextSize(), paint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            closing = true;
+            opening = false;
+
+            return true;
+        }
+
         return false;
     }
 
@@ -109,6 +120,7 @@ public class HowToView implements View {
 
     public void load(Context context) {
         cycleInfo = context.getString(R.string.tutorial_cycle_info);
+        tapAnywhere = context.getString(R.string.result_tap_to_continue);
 
         cycle = BitmapFactory.decodeResource(context.getResources(), R.drawable.cycle);
     }
