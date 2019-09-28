@@ -15,6 +15,7 @@ import com.github.breskin.squares.gameplay.modes.ConstantMode;
 import com.github.breskin.squares.gameplay.modes.EndlessMode;
 import com.github.breskin.squares.gameplay.modes.GameMode;
 import com.github.breskin.squares.gameplay.modes.MoveLimitedMode;
+import com.github.breskin.squares.gameplay.modes.ResettingTimeMode;
 import com.github.breskin.squares.gameplay.modes.TimeLimitedMode;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class ModeSwitcher {
     private MoveLimitedMode moveLimitedMode = new MoveLimitedMode();
     private TimeLimitedMode timeLimitedMode = new TimeLimitedMode();
     private ConstantMode constantMode = new ConstantMode();
+    private ResettingTimeMode resettingTimeMode = new ResettingTimeMode();
 
     private Multiplier multiplier;
 
@@ -58,6 +60,7 @@ public class ModeSwitcher {
         modeList.add(moveLimitedMode);
         modeList.add(timeLimitedMode);
         modeList.add(constantMode);
+        modeList.add(resettingTimeMode);
     }
 
     public void update(GameLogic logic) {
@@ -218,6 +221,7 @@ public class ModeSwitcher {
         moveLimitedMode.load(context);
         timeLimitedMode.load(context);
         constantMode.load(context);
+        resettingTimeMode.load(context);
 
         selectedMode = DataManager.getPreferences().getInt(LAST_SELECTED_MODE_LABEL, 0);
     }

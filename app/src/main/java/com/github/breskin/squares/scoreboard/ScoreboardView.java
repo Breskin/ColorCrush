@@ -28,7 +28,7 @@ public class ScoreboardView implements View {
 
     private PointF previousTouch;
 
-    private String infinite, timeLimited, moveLimited, untilPointless, bestScores, today, allTime, gamesPlayed;
+    private String infinite, timeLimited, moveLimited, untilPointless, resettingTime, bestScores, today, allTime, gamesPlayed;
 
     public ScoreboardView(RenderView renderView) {
         this.renderView = renderView;
@@ -109,28 +109,32 @@ public class ScoreboardView implements View {
         paint.setTextSize(categoryFontSize);
         canvas.drawText(today, (RenderView.ViewWidth - paint.measureText(today)) / 2, margin + translation + animationTranslation + contentFontSize, paint);
         margin += categoryFontSize * 1.75f;
-        margin = drawRecords(canvas, margin, DataManager.getTodayEndlessMaxScore(), DataManager.getTodayConstantMaxScore(), DataManager.getTodayTimeLimitedMaxScore(), DataManager.getTodayMoveLimitedMaxScore()) + categoryFontSize;
+        margin = drawRecords(canvas, margin, DataManager.getTodayEndlessMaxScore(), DataManager.getTodayConstantMaxScore(), DataManager.getResettingTimeMaxScore(), DataManager.getTodayTimeLimitedMaxScore(), DataManager.getTodayMoveLimitedMaxScore()) + categoryFontSize;
 
         paint.setTextSize(categoryFontSize);
         canvas.drawText(allTime, (RenderView.ViewWidth - paint.measureText(today)) / 2, margin + translation + animationTranslation + contentFontSize, paint);
         margin += categoryFontSize * 1.75f;
-        margin = drawRecords(canvas, margin, DataManager.getEndlessMaxScore(), DataManager.getConstantMaxScore(), DataManager.getTimeLimitedMaxScore(), DataManager.getMoveLimitedMaxScore()) + RenderView.ViewHeight * 0.1f;
+        margin = drawRecords(canvas, margin, DataManager.getEndlessMaxScore(), DataManager.getConstantMaxScore(), DataManager.getTodayResettingTimeMaxScore(), DataManager.getTimeLimitedMaxScore(), DataManager.getMoveLimitedMaxScore()) + RenderView.ViewHeight * 0.1f;
 
         infoButton.render(canvas);
 
         contentSize = margin;
     }
 
-    float drawRecords(Canvas canvas, float margin, int infiniteMaxScore, int untilPointlessMaxScore, int timeLimitedMaxScore[], int moveLimitedMaxScore[]) {
+    float drawRecords(Canvas canvas, float margin, int infiniteMaxScore, int untilPointlessMaxScore, int resettingTimeMaxScore, int timeLimitedMaxScore[], int moveLimitedMaxScore[]) {
         paint.setTextSize(contentFontSize);
         canvas.drawText(infinite + ":", RenderView.ViewWidth * 0.05f, margin + translation + animationTranslation + contentFontSize, paint);
         canvas.drawText(infiniteMaxScore+"", RenderView.ViewWidth * 0.95f - paint.measureText(infiniteMaxScore + ""), margin + translation + animationTranslation + contentFontSize, paint);
 
         margin += contentFontSize * 2.5f;
 
-        paint.setTextSize(contentFontSize);
         canvas.drawText(untilPointless + ":", RenderView.ViewWidth * 0.05f, margin + translation + animationTranslation + contentFontSize, paint);
         canvas.drawText(untilPointlessMaxScore+"", RenderView.ViewWidth * 0.95f - paint.measureText(untilPointlessMaxScore + ""), margin + translation + animationTranslation + contentFontSize, paint);
+
+        margin += contentFontSize * 2.5f;
+
+        canvas.drawText(resettingTime + ":", RenderView.ViewWidth * 0.05f, margin + translation + animationTranslation + contentFontSize, paint);
+        canvas.drawText(resettingTimeMaxScore+"", RenderView.ViewWidth * 0.95f - paint.measureText(resettingTimeMaxScore + ""), margin + translation + animationTranslation + contentFontSize, paint);
 
         margin += contentFontSize * 2.5f;
 
@@ -238,6 +242,7 @@ public class ScoreboardView implements View {
         timeLimited = context.getString(R.string.mode_time_limited);
         moveLimited = context.getString(R.string.mode_move_limited);
         untilPointless = context.getString(R.string.mode_constant);
+        resettingTime = context.getString(R.string.mode_resetting_time);
         today = context.getString(R.string.scoreboard_today);
         allTime = context.getString(R.string.scoreboard_all_time);
         gamesPlayed = context.getString(R.string.games_played);

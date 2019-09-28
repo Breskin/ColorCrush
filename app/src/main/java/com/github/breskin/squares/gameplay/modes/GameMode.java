@@ -107,9 +107,15 @@ public class GameMode {
                 logic.points += pointsTable[block.getCurrentColor().getId()];
                 logic.getBoard().addFloatingPoint(block, pointsTable[block.getCurrentColor().getId()]);
 
+                onBlockDestroyed(logic, block);
+
                 block.destroy(logic);
             }
         }
+    }
+
+    protected void onBlockDestroyed(GameLogic logic, Block block) {
+
     }
 
     public void onMoveMade(GameLogic logic) {

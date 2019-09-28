@@ -22,4 +22,6 @@
     <string name="games_played">Games played: %1$d</string>
     <string name="result_tap_to_continue">Tap anywhere to continue</string>
     <string name="tutorial_cycle_info">When blocks are moved they change color in cycle:</string>
+    <string name="mode_resetting_time">Time is running out</string>
+    <string name="mode_resetting_time_description">Short timer resets after every explosion</string>
 </resources>
