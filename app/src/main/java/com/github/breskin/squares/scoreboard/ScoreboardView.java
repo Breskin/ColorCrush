@@ -19,9 +19,12 @@ public class ScoreboardView implements View {
     private RenderView renderView;
 
     private Paint paint;
+    private InfoButton infoButton;
 
     private boolean closing = false, touchDown = false, touchMoved = false;
     private float alpha = 0, animationTranslation = 0, translation = 0, headlineFontSize, categoryFontSize, contentFontSize, touchDifference, contentSize;
+
+    private RenderView.ViewType targetView = RenderView.ViewType.None;
 
     private PointF previousTouch;
 
@@ -34,6 +37,8 @@ public class ScoreboardView implements View {
         paint.setAntiAlias(true);
 
         previousTouch = new PointF(0, 0);
+
+        infoButton = new InfoButton(this);
     }
 
     @Override
@@ -70,15 +75,19 @@ public class ScoreboardView implements View {
             translation = 0;
 
         if (closing) {
-            animationTranslation += (RenderView.ViewHeight * 0.5f - animationTranslation) * 0.1f;
+            animationTranslation += (RenderView.ViewHeight * 0.925f - animationTranslation) * 0.1f * (RenderView.FrameTime / 16f);
             alpha += (0 - alpha) * 0.1f;
 
             if (alpha < 0.075f)
-                renderView.switchView(RenderView.ViewType.Game);
+                renderView.switchView(targetView);
         } else {
-            animationTranslation += (0 - animationTranslation) * 0.1f * (RenderView.FrameTime / 16f);
+            animationTranslation += (0 - animationTranslation) * 0.1f * (RenderView.FrameTime / 16f) * (RenderView.FrameTime / 16f);
             alpha += (1 - alpha) * 0.1f;
         }
+
+        infoButton.alpha = alpha;
+        infoButton.topMargin = translation + animationTranslation + RenderView.ViewWidth * 0.05f;
+        infoButton.update();
     }
 
     @Override
@@ -106,6 +115,8 @@ public class ScoreboardView implements View {
         canvas.drawText(allTime, (RenderView.ViewWidth - paint.measureText(today)) / 2, margin + translation + animationTranslation + contentFontSize, paint);
         margin += categoryFontSize * 1.75f;
         margin = drawRecords(canvas, margin, DataManager.getEndlessMaxScore(), DataManager.getConstantMaxScore(), DataManager.getTimeLimitedMaxScore(), DataManager.getMoveLimitedMaxScore()) + RenderView.ViewHeight * 0.1f;
+
+        infoButton.render(canvas);
 
         contentSize = margin;
     }
@@ -173,7 +184,9 @@ public class ScoreboardView implements View {
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-        
+
+        if (infoButton.onTouchEvent(event)) return true;
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 touchDifference = 0;
@@ -200,6 +213,7 @@ public class ScoreboardView implements View {
     @Override
     public boolean onBackPressed() {
         closing = true;
+        targetView = RenderView.ViewType.Game;
 
         return true;
     }
@@ -213,6 +227,11 @@ public class ScoreboardView implements View {
         touchDown = false;
     }
 
+    public void openInfo() {
+        closing = true;
+        targetView = RenderView.ViewType.HowTo;
+    }
+
     public void load(Context context) {
         bestScores = context.getString(R.string.scoreboard_best_scores);
         infinite = context.getString(R.string.mode_endless);
@@ -222,5 +241,7 @@ public class ScoreboardView implements View {
         today = context.getString(R.string.scoreboard_today);
         allTime = context.getString(R.string.scoreboard_all_time);
         gamesPlayed = context.getString(R.string.games_played);
+
+        infoButton.load(context);
     }
 }

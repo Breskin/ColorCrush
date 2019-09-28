@@ -13,10 +13,11 @@ import android.view.SurfaceView;
 import com.github.breskin.squares.gameplay.GameView;
 import com.github.breskin.squares.particles.ParticleSystem;
 import com.github.breskin.squares.scoreboard.ScoreboardView;
+import com.github.breskin.squares.tutorial.HowToView;
 
 public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
 
-    public enum ViewType { None, Game, Scoreboard }
+    public enum ViewType { None, Game, Scoreboard, HowTo }
 
     public static int ViewHeight = 0, ViewWidth = 0, FrameTime = 0;
 
@@ -31,6 +32,7 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
 
     private GameView gameView;
     private ScoreboardView scoreboardView;
+    private HowToView howToView;
 
     public RenderView(Context context) {
         super(context);
@@ -48,12 +50,16 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
 
         scoreboardView = new ScoreboardView(this);
         scoreboardView.load(context);
+
+        howToView = new HowToView(this);
+        howToView.load(context);
     }
 
     private void render(Canvas canvas) {
         switch (currentView) {
             case Game: gameView.update(); gameView.render(canvas); break;
             case Scoreboard: scoreboardView.update(); scoreboardView.render(canvas); break;
+            case HowTo: howToView.update(); howToView.render(canvas); break;
         }
 
         particleSystem.update();
@@ -68,6 +74,7 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
         switch (currentView) {
             case Game: gameView.onTouchEvent(event); break;
             case Scoreboard: scoreboardView.onTouchEvent(event); break;
+            case HowTo: howToView.onTouchEvent(event); break;
         }
 
         return true;
@@ -79,6 +86,7 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
         switch (currentView) {
             case Game: gameView.open(); break;
             case Scoreboard: scoreboardView.open(); break;
+            case HowTo: howToView.open(); break;
         }
     }
 
@@ -86,6 +94,7 @@ public class RenderView extends SurfaceView implements Runnable, SurfaceHolder.C
         switch (currentView) {
             case Game: return gameView.onBackPressed();
             case Scoreboard: return scoreboardView.onBackPressed();
+            case HowTo: return howToView.onBackPressed();
         }
 
         return false;
